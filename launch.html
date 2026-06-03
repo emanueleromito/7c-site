@@ -15,7 +15,7 @@
     --rule: #2a2a2a; --blue: #b6cfe2;
     --sans: "Helvetica Neue", "Inter", Helvetica, Arial, sans-serif;
     --druk: "Druk Wide Bold", "Helvetica Neue", sans-serif;
-    --mono: "IBM Plex Mono", "SF Mono", ui-monospace, Menlo, monospace;
+    --mono: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
   html, body { background: var(--ink); color: var(--paper); font-family: var(--sans); font-weight: 300; -webkit-font-smoothing: antialiased; min-height: 100vh; overflow-x: hidden; }
   body { cursor: none; }
@@ -69,10 +69,8 @@
   #p3 .seat-card .corner.bl { bottom:0; left:0; border-right:0; border-top:0; }
   #p3 .seat-card .corner.br { bottom:0; right:0; border-left:0; border-top:0; }
   #p3 .seat-card .label { font-family: var(--mono); font-size: 11px; letter-spacing: .3em; color: var(--grey-lt); margin-bottom: 28px; text-transform: uppercase; }
-  #p3 .seat-card .seat { font-family: var(--druk); font-size: clamp(140px, 22vw, 320px); font-weight: 900; line-height: .9; letter-spacing: -0.04em; text-transform: uppercase; color: var(--paper); }
+  #p3 .seat-card .seat { font-family: var(--sans); font-size: clamp(100px, 15vw, 220px); font-weight: 300; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; color: var(--paper); }
   #p3 .seat-card .seat .digit { display: inline-block; }
-  #p3 .seat-card .meta { font-family: var(--mono); font-size: 11px; letter-spacing: .3em; color: var(--grey-lt); margin-top: 32px; text-transform: uppercase; display: flex; justify-content: center; gap: 14px; align-items: center; }
-  #p3 .seat-card .meta .pulse { width:6px; height:6px; background:var(--blue); border-radius:50%; animation:pulse 1.4s ease-in-out infinite; }
 
   #p3 .checkin { border-top: 1px solid var(--rule); padding-top: 24px; display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: end; }
   #p3 .checkin .info { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--grey); text-transform: uppercase; line-height: 1.7; max-width: 60ch; }
@@ -169,10 +167,6 @@
         <div class="label">— SEAT ASSIGNED —</div>
         <div class="seat">
           <span class="digit">7</span><span class="digit">C</span>
-        </div>
-        <div class="meta">
-          <span class="pulse"></span>
-          STATUS: IN TRANSIT
         </div>
       </div>
 
