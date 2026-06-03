@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/7c-site/assets/logo-new-Dx7AcjjY.png">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #ffffff;
+    --grey: #888;
+    --grey-lt: #d8d8d8;
+    --rule: #0a0a0a;
+    --mono: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --druk: "Druk Wide Bold", "Helvetica Neue", sans-serif;
+  }
+
+  body {
+    background: #ffffff;
+    color: #0a0a0a;
+    font-family: "Helvetica Neue", sans-serif;
+    margin: 0;
+  }
+
+  .g-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+
+  .g-back {
+    margin-bottom: 20px;
+  }
+  .g-back a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--grey);
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color .2s;
+  }
+  .g-back a:hover { color: var(--ink); }
+
+  /* Title Block */
+  .g-title-block {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 32px; gap: 40px;
+  }
+  .g-title-block h1 {
+    font-family: var(--druk); font-size: clamp(32px, 4.5vw, 64px); font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; line-height: .9;
+    flex: 1; margin: 0;
+  }
+
+  /* Main Grid */
+  .g-main-grid {
+    display: grid; grid-template-columns: 1fr 440px; gap: 64px;
+    margin-bottom: 0;
+    align-items: start;
+  }
+
+  .globe-wrap {
+    background: #000; border: 1px solid var(--ink);
+    position: relative; width: 100%; height: 100%; min-height: 800px; overflow: hidden;
+  }
+  .globe-wrap svg { width: 100%; height: 100%; display: block; }
+  .globe-wrap .corner { position: absolute; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #555; padding: 16px; }
+  .globe-wrap .corner.tl { top: 0; left: 0; }
+  .globe-wrap .corner.tr { top: 0; right: 0; text-align: right; }
+  .globe-wrap .corner.bl { bottom: 0; left: 0; }
+  .globe-wrap .corner.br { bottom: 0; right: 0; text-align: right; color: var(--paper); }
+  .globe-wrap .corner b { display: block; color: #888; font-weight: 500; margin-bottom: 3px; font-size: 9px; }
+
+  /* Sidebar (Journey + Passport) */
+  .sidebar { display: flex; flex-direction: column; }
+
+  .sidebar-section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 14px; border-bottom: 1px solid var(--ink);
+    margin-bottom: 24px; margin-top: 48px;
+  }
+  .sidebar-section-head:first-child { margin-top: 0; }
+  .sidebar-section-head h3 { font-family: var(--druk); font-size: 18px; font-weight: 900; letter-spacing: -0.01em; text-transform: uppercase; }
+  .sidebar-section-head .mono { font-family: var(--mono); color: var(--grey); font-size: 10px; }
+
+  .passage {
+    display: grid; grid-template-columns: 42px 1fr auto; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid var(--grey-lt);
+    align-items: center;
+  }
+  .passage .idx { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey); }
+  .passage .p-main .city { font-family: "Helvetica Neue", sans-serif; font-size: 14px; letter-spacing: -0.01em; text-transform: uppercase; }
+  .passage .p-main .ctx { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: var(--grey); text-transform: uppercase; margin-top: 3px; }
+  .passage .p-right { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); text-align: right; }
+  .passage.sealed { opacity: .7; }
+  .passage.sealed .p-right::before { content:"✓ "; color: var(--ink); }
+
+  /* Passport Details */
+  .f-section {
+    padding: 18px 0;
+    display: grid; grid-template-columns: 110px 1fr; gap: 16px;
+  }
+  .f-section + .f-section { border-top: 1px solid var(--grey-lt); }
+  .f-section .lbl { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--grey); text-transform: uppercase; }
+  .f-section .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; font-family: var(--mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }
+  .f-section .kv b { display: block; color: var(--grey); font-weight: 500; font-size: 9px; letter-spacing: .16em; margin-bottom: 4px; }
+  .f-section .kv .v { font-family: "Helvetica Neue", sans-serif; font-size: 13px; letter-spacing: -0.01em; color: var(--ink); font-weight: 400; }
+
+  .site-footer { border-top: 0 !important; }
+
+  @media (max-width: 1100px) {
+    .g-main-grid { grid-template-columns: 1fr; }
+    .globe-wrap { min-height: 500px; }
+    .g-title-block { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+  <script type="module" crossorigin src="/7c-site/assets/shared-D0yorDIT.js"></script>
+  <link rel="stylesheet" crossorigin href="/7c-site/assets/shared-BqN3qLpc.css">
+</head>
+<body>
+
+<site-header></site-header>
+
+<div class="g-container">
+  <div class="g-back">
+    <a href="archive.html">← BACK TO ARCHIVE</a>
+  </div>
+
+  <div class="g-title-block">
+    <h1 id="g-title">LOADING...</h1>
+  </div>
+
+  <div class="g-main-grid">
+    <div class="globe-col">
+      <div class="globe-wrap" id="globe-wrap">
+        <svg id="globe" viewBox="0 0 600 600"></svg>
+        <div class="corner tl"><b>ROUTE MAP</b>A27.01 / ORTHO</div>
+        <div class="corner tr"><b>ROTATION</b><span id="rot-label">AUTO</span></div>
+        <div class="corner bl"><b>SCALE</b>1 : WORLD</div>
+        <div class="corner br"><b>TOTAL</b><span id="km-total">—</span> KM</div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <!-- JOURNEY SECTION -->
+      <div class="sidebar-section-head">
+        <h3>JOURNEY</h3>
+      </div>
+      <div id="origin-list"></div>
+      <div id="personal-list"></div>
+
+      <!-- PASSPORT SECTION -->
+      <div class="sidebar-section-head">
+        <h3>PRODUCT PASSPORT</h3>
+      </div>
+      <div class="f-section">
+        <div class="lbl">IDENTITY</div>
+        <div class="kv">
+          <div><b>SERIAL</b><span class="v" id="fi-no">—</span></div>
+          <div><b>EDITION</b><span class="v" id="fi-ed">—</span></div>
+          <div><b>SEASON</b><span class="v" id="fi-se">—</span></div>
+          <div><b>COLOUR</b><span class="v" id="fi-col">—</span></div>
+          <div><b>SIZE</b><span class="v" id="fi-sz">—</span></div>
+          <div><b>ISSUED</b><span class="v">SS26</span></div>
+        </div>
+      </div>
+      <div class="f-section">
+        <div class="lbl">MATERIALS</div>
+        <div class="kv">
+          <div><b>SHELL</b><span class="v" id="fi-shell">—</span></div>
+          <div><b>TANNERY</b><span class="v" id="fi-tannery">—</span></div>
+          <div><b>LINING</b><span class="v" id="fi-lining">—</span></div>
+          <div><b>TRIMS</b><span class="v" id="fi-trims">—</span></div>
+          <div><b>WEIGHT</b><span class="v" id="fi-weight">—</span></div>
+          <div><b>CARE</b><span class="v" id="fi-care">—</span></div>
+        </div>
+      </div>
+      <div class="f-section">
+        <div class="lbl">PRODUCTION ROUTE</div>
+        <div class="kv" id="fi-origin-grid">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+  SevenC.ensureDemo();
+  const params = new URLSearchParams(location.search);
+  const no = params.get('no') || '7C-044';
+  const archive = SevenC.getArchive();
+  const g = archive.find(x => x.no === no) || archive[0];
+  if (!g) { location.href = 'archive.html'; }
+
+  // Hydrate Title
+  const titleEl = document.getElementById('g-title');
+  if (titleEl) {
+    titleEl.innerHTML = g.name.split(' ').map(w=>w).join('<br>') + `.<br><span style="color:var(--grey); font-family: 'Helvetica Neue', sans-serif; font-size: 0.35em; font-weight: 400; letter-spacing: 0.2em; display: block; margin-top: 0.25em;">${g.cat}</span>`;
+  }
+  document.getElementById('fi-no').textContent = g.no;
+  document.getElementById('fi-ed').textContent = g.edition;
+  document.getElementById('fi-se').textContent = g.season;
+  document.getElementById('fi-sz').textContent = g.size;
+  document.getElementById('fi-col').textContent = g.color || '—';
+  document.getElementById('fi-shell').textContent = g.shell || '—';
+  document.getElementById('fi-tannery').textContent = g.tannery || '—';
+  document.getElementById('fi-lining').textContent = g.lining || '—';
+  document.getElementById('fi-trims').textContent = g.trims || '—';
+  document.getElementById('fi-weight').textContent = g.weight || '—';
+  document.getElementById('fi-care').textContent = g.care || '—';
+  // Build production route from journey origin steps
+  const originGrid = document.getElementById('fi-origin-grid');
+  if (originGrid && g.journey) {
+    originGrid.innerHTML = g.journey.map(p =>
+      `<div><b>${p.role}</b><span class="v">${p.city}${p.country && p.country !== '—' ? ' · ' + p.country : ''}</span></div>`
+    ).join('');
+  }
+
+  const journeys = SevenC.getJourneys();
+  let personal = journeys[g.no] || [];
+  const origin = g.journey || [];
+
+  /* ───── GLOBE ───── */
+  const CX = 300, CY = 300;
+  const MIN_SCALE = 160, MAX_SCALE = 700;
+  let globeScale = 260;
+  let rotLon = -10, rotLat = -20, autoRot = true;
+
+  const projection = d3.geoOrthographic().scale(globeScale).translate([CX, CY]).clipAngle(90);
+  const pathGen = d3.geoPath().projection(projection);
+  const graticule = d3.geoGraticule()();
+
+  let worldCountries = null, worldBorders = null;
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(r => r.json())
+    .then(w => {
+      worldCountries = topojson.feature(w, w.objects.countries);
+      worldBorders = topojson.mesh(w, w.objects.countries, (a, b) => a !== b);
+    });
+
+  function isVisible(lng, lat) {
+    const [λ0, φ0] = projection.rotate();
+    const λ = (lng + λ0) * Math.PI / 180;
+    const φ = lat * Math.PI / 180;
+    const φc = -φ0 * Math.PI / 180;
+    return Math.sin(φc)*Math.sin(φ) + Math.cos(φc)*Math.cos(φ)*Math.cos(λ) > 0;
+  }
+
+  /* ── Radial label placement with collision avoidance ── */
+  function placedLabels(points) {
+    const LABEL_W = 130, LABEL_H = 14, PAD = 18;
+    // Build raw label positions pushed radially outward from globe centre
+    const labels = points.map(p => {
+      const pr = projection([p.lng, p.lat]);
+      const dx = pr[0] - CX, dy = pr[1] - CY;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const nx = dx / dist, ny = dy / dist;
+      // Push label out PAD px beyond the dot
+      let lx = pr[0] + nx * PAD;
+      let ly = pr[1] + ny * PAD;
+      // Prefer right side; if near left edge flip
+      const anchor = lx < CX ? 'end' : 'start';
+      if (anchor === 'end') lx -= 4; else lx += 4;
+      return { p, pr, lx, ly, anchor, w: LABEL_W, h: LABEL_H };
+    });
+
+    // Iterative collision nudge (5 passes)
+    for (let pass = 0; pass < 5; pass++) {
+      for (let i = 0; i < labels.length; i++) {
+        for (let j = i + 1; j < labels.length; j++) {
+          const a = labels[i], b = labels[j];
+          const overlapX = Math.abs(a.lx - b.lx) < LABEL_W;
+          const overlapY = Math.abs(a.ly - b.ly) < LABEL_H + 4;
+          if (overlapX && overlapY) {
+            const push = ((LABEL_H + 4) - Math.abs(a.ly - b.ly)) / 2 + 1;
+            if (a.ly <= b.ly) { a.ly -= push; b.ly += push; }
+            else               { a.ly += push; b.ly -= push; }
+          }
+        }
+      }
+    }
+    return labels;
+  }
+
+  function renderGlobe() {
+    projection.scale(globeScale).rotate([rotLon, rotLat]);
+    const svgEl = document.getElementById('globe');
+    const R = globeScale;
+    let html = `<circle cx="${CX}" cy="${CY}" r="${R}" fill="#050505" stroke="#2a2a2a" stroke-width="1"/>`;
+    const gd = pathGen(graticule);
+    if (gd) html += `<path d="${gd}" fill="none" stroke="#1a1a1a" stroke-width=".6"/>`;
+
+    if (worldCountries) {
+      worldCountries.features.forEach(f => {
+        const d = pathGen(f);
+        if (d) html += `<path d="${d}" fill="#2f2f2f" stroke="#5a5a5a" stroke-width=".4" opacity=".95"/>`;
+      });
+      const bd = pathGen(worldBorders);
+      if (bd) html += `<path d="${bd}" fill="none" stroke="#5a5a5a" stroke-width=".4"/>`;
+    }
+
+    const all = [...origin.map(p=>({...p,kind:'origin'})), ...personal.map(p=>({...p,kind:'personal'}))];
+    // Draw route lines
+    for (let i = 0; i < all.length - 1; i++) {
+      const a = all[i], b = all[i+1];
+      const d = pathGen({type:'LineString', coordinates:[[a.lng,a.lat],[b.lng,b.lat]]});
+      if (!d) continue;
+      const col = (a.kind==='personal'||b.kind==='personal') ? '#f2f0ec' : '#9a9a9a';
+      const dash = (a.kind==='personal'||b.kind==='personal') ? '' : 'stroke-dasharray="3 3"';
+      html += `<path d="${d}" fill="none" stroke="${col}" stroke-width="1" ${dash} opacity=".9"/>`;
+    }
+
+    // Collect visible points and compute label positions
+    const visible = all.filter(p => isVisible(p.lng, p.lat));
+    const placed = placedLabels(visible);
+
+    placed.forEach(({ p, pr, lx, ly, anchor }, i) => {
+      const isLast = all.indexOf(p) === all.length - 1;
+      const col = p.kind === 'personal' ? '#f2f0ec' : '#c9c7c2';
+      const dotR = isLast ? 5 : 3;
+      // Leader line from dot edge to label
+      const leaderX2 = anchor === 'end' ? lx + 4 : lx - 4;
+      html += `<g>
+        ${isLast ? `<circle cx="${pr[0].toFixed(1)}" cy="${pr[1].toFixed(1)}" r="5" fill="none" stroke="${col}" stroke-width=".6" opacity=".5"><animate attributeName="r" from="5" to="16" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".6" to="0" dur="2s" repeatCount="indefinite"/></circle>` : ''}
+        <circle cx="${pr[0].toFixed(1)}" cy="${pr[1].toFixed(1)}" r="${dotR}" fill="${col}" stroke="#050505" stroke-width="1"/>
+        <line x1="${pr[0].toFixed(1)}" y1="${pr[1].toFixed(1)}" x2="${leaderX2.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="${col}" stroke-width=".5" opacity=".5"/>
+        <text x="${lx.toFixed(1)}" y="${(ly + 3.5).toFixed(1)}" fill="${col}" font-family="Helvetica Neue,sans-serif" font-weight="300" font-size="9.5" letter-spacing=".8" text-anchor="${anchor}">${p.city}</text>
+      </g>`;
+    });
+    svgEl.innerHTML = html;
+  }
+
+  function loop() { if (autoRot) { rotLon -= 0.15; renderGlobe(); } requestAnimationFrame(loop); }
+  renderGlobe(); loop();
+
+  /* ── Drag (mouse) ── */
+  let dragging = false, sx = 0, sy = 0, sLon = 0, sLat = 0;
+  const globeWrap = document.getElementById('globe-wrap');
+  globeWrap.addEventListener('mousedown', e => {
+    dragging = true; autoRot = false;
+    document.getElementById('rot-label').textContent = 'MANUAL';
+    sx = e.clientX; sy = e.clientY; sLon = rotLon; sLat = rotLat;
+  });
+  addEventListener('mousemove', e => {
+    if (!dragging) return;
+    rotLon = sLon - (e.clientX - sx) * 0.4;
+    rotLat = Math.max(-80, Math.min(80, sLat + (e.clientY - sy) * 0.4));
+    renderGlobe();
+  });
+  addEventListener('mouseup', () => dragging = false);
+  globeWrap.addEventListener('dblclick', () => {
+    autoRot = !autoRot;
+    document.getElementById('rot-label').textContent = autoRot ? 'AUTO' : 'MANUAL';
+  });
+
+  /* ── Scroll wheel zoom ── */
+  globeWrap.addEventListener('wheel', e => {
+    e.preventDefault();
+    autoRot = false;
+    document.getElementById('rot-label').textContent = 'MANUAL';
+    const delta = e.deltaY > 0 ? -18 : 18;
+    globeScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, globeScale + delta));
+    const zoomPct = Math.round(((globeScale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE)) * 100);
+    document.querySelector('.corner.bl').innerHTML = `<b>SCALE</b>${zoomPct}% ZOOM`;
+    renderGlobe();
+  }, { passive: false });
+
+  /* ── Touch drag + pinch zoom ── */
+  let t0 = null, tLon = 0, tLat = 0, pinch0 = 0, pinchScale0 = 0;
+  globeWrap.addEventListener('touchstart', e => {
+    autoRot = false;
+    document.getElementById('rot-label').textContent = 'MANUAL';
+    if (e.touches.length === 1) {
+      t0 = e.touches[0]; tLon = rotLon; tLat = rotLat;
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinch0 = Math.sqrt(dx*dx + dy*dy);
+      pinchScale0 = globeScale;
+    }
+  }, { passive: true });
+  globeWrap.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && t0) {
+      rotLon = tLon - (e.touches[0].clientX - t0.clientX) * 0.4;
+      rotLat = Math.max(-80, Math.min(80, tLat + (e.touches[0].clientY - t0.clientY) * 0.4));
+      renderGlobe();
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      globeScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, pinchScale0 * (dist / pinch0)));
+      renderGlobe();
+    }
+  }, { passive: false });
+  globeWrap.addEventListener('touchend', () => { t0 = null; });
+
+  /* ───── TIMELINE ───── */
+  function renderTimeline() {
+    const ol = document.getElementById('origin-list');
+    const pl = document.getElementById('personal-list');
+    ol.innerHTML = origin.map((p, i) => `
+      <div class="passage sealed">
+        <div class="idx">${String(i+1).padStart(2,'0')}</div>
+        <div class="p-main">
+          <div class="city">${p.city}<span style="color:var(--grey);font-family:var(--mono);font-size:10px;margin-left:6px;">${p.country}</span></div>
+          <div class="ctx">${p.role} · ${p.mode}</div>
+        </div>
+        <div class="p-right">${p.date}</div>
+      </div>
+    `).join('');
+    pl.innerHTML = personal.map((p, i) => `
+      <div class="passage">
+        <div class="idx">${String(origin.length + i + 1).padStart(2,'0')}</div>
+        <div class="p-main">
+          <div class="city">${p.city}<span style="color:var(--grey);font-family:var(--mono);font-size:10px;margin-left:6px;">${p.country}</span></div>
+          <div class="ctx">${p.mode || 'RECORDED'}${p.note ? ' · ' + p.note : ''}</div>
+        </div>
+        <div class="p-right">${p.date}</div>
+      </div>
+    `).join('');
+
+    let km = 0; const all = [...origin, ...personal];
+    for (let i = 1; i < all.length; i++) {
+      const a = all[i-1], b = all[i];
+      const R_EARTH = 6371, toR = d => d*Math.PI/180;
+      const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+      const aa = Math.sin(dLat/2)**2 + Math.cos(toR(a.lat))*Math.cos(toR(b.lat))*Math.sin(dLng/2)**2;
+      km += 2 * R_EARTH * Math.atan2(Math.sqrt(aa), Math.sqrt(1-aa));
+    }
+    document.getElementById('km-total').textContent = Math.round(km).toLocaleString();
+  }
+  renderTimeline();
+</script>
+</body>
+</html>
