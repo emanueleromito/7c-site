@@ -1,3 +1,4 @@
+import _logoSrc from './assets/logo-new.png';
 /* ─────────── 7C SHARED JS ─────────── */
 (function() {
   // Base path for GitHub Pages subpath deployment
@@ -49,7 +50,7 @@
           <div class="nav-l"><a href="${_BASE}/#shop">SHOP</a></div>
           <div class="nav-l"><a href="${_BASE}/#brand">BRAND</a></div>
           <div class="nav-l"><a href="${_BASE}/#arrivals">ARRIVALS</a></div>
-          <div class="logo"><a href="${_BASE}/"><img src="${_BASE}/assets/logo-new.png" alt="7C"/></a></div>
+          <div class="logo"><a href="${_BASE}/"><img src="${_logoSrc}" alt="7C"/></a></div>
           <div class="nav-r"><a href="${_BASE}/#search">SEARCH</a></div>
           <div class="nav-r">${checkInLink}</div>
           <div class="nav-r"><a href="${_BASE}/#cart" class="cart">CART <span class="count">00</span></a></div>
@@ -115,7 +116,7 @@
         </style>
         <footer class="site-footer">
           <div class="foot-wordmark">
-            <img src="${_BASE}/assets/logo-new.png" alt="7C" />
+            <img src="${_logoSrc}" alt="7C" />
           </div>
           <div class="foot-cols">
             <div>
