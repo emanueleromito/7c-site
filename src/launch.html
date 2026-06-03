@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/logo.png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #060606;
+    --ink-2: #0e0e0e;
+    --paper: #ececec;
+    --grey: #6c6c6c;
+    --grey-lt: #9a9a9a;
+    --grey-dk: #1c1c1c;
+    --rule: #2a2a2a;
+    --blue: #b6cfe2;
+    --mono: "IBM Plex Mono", "SF Mono", ui-monospace, Menlo, monospace;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  html, body {
+    background: var(--ink); color: var(--paper);
+    font-family: var(--sans); -webkit-font-smoothing: antialiased;
+    min-height: 100vh; overflow-x: hidden;
+  }
+  body { cursor: none; }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; background: none; border: 0; cursor: none; outline: none; }
+
+  /* Faint film grain over everything */
+  body::before {
+    content: ""; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none; mix-blend-mode: screen; z-index: 900; opacity: .5;
+  }
+
+  /* Cursor */
+  .cursor { position: fixed; top: 0; left: 0; width: 22px; height: 22px; pointer-events: none; z-index: 1000; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+  .cursor::before, .cursor::after { content:""; position:absolute; background:#fff; }
+  .cursor::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  .cursor::after { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+  .cursor-dot { position: fixed; top:0; left:0; width:6px; height:6px; background:#fff; border-radius:50%; pointer-events:none; z-index:1001; transform: translate(-50%,-50%); mix-blend-mode: difference; }
+  .cursor-dot.hov { width: 36px; height: 36px; background: transparent; border: 1px solid #fff; }
+
+  /* ─────────── STAGE ─────────── */
+  .stage { position: relative; min-height: 100vh; }
+  .phase { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 1.2s ease; }
+  .phase.active { opacity: 1; pointer-events: auto; }
+
+  /* ─────────── PHASE 1 — DISORIENTATION ─────────── */
+  #p1 { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  #p1 .connect {
+    font-family: var(--mono); font-size: 13px; letter-spacing: .3em;
+    color: var(--paper); opacity: 0;
+    animation: connect-in 2s ease 1s forwards;
+  }
+  #p1 .connect .dots { display: inline-block; width: 24px; text-align: left; }
+  @keyframes connect-in { to { opacity: 1; } }
+
+  /* ─────────── PHASE 2 — SYSTEM LOADING ─────────── */
+  #p2 {
+    padding: 28px 32px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .12em;
+    color: var(--grey);
+  }
+  #p2 .top {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    align-items: start;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+    text-transform: uppercase;
+  }
+  #p2 .top b { color: var(--paper); font-weight: 500; }
+  #p2 .top .c { text-align: center; }
+  #p2 .top .r { text-align: right; }
+
+  #p2 .center {
+    display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 60px;
+    align-items: center; padding: 60px 0;
+  }
+
+  /* radar */
+  .radar {
+    aspect-ratio: 1 / 1; max-width: 380px; width: 100%;
+    position: relative; margin: 0 auto;
+    border: 1px solid var(--rule); border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.02) 0%, transparent 70%);
+  }
+  .radar::before, .radar::after {
+    content:""; position: absolute; inset: 0;
+    border: 1px solid var(--rule); border-radius: 50%;
+    margin: 18%;
+  }
+  .radar::after { margin: 36%; }
+  .radar .x, .radar .y {
+    position: absolute; background: var(--rule);
+  }
+  .radar .x { top: 50%; left: 0; right: 0; height: 1px; }
+  .radar .y { left: 50%; top: 0; bottom: 0; width: 1px; }
+  .radar .sweep {
+    position: absolute; inset: 0;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(182,207,226,.35) 340deg, rgba(182,207,226,.85) 358deg, transparent 360deg);
+    border-radius: 50%;
+    animation: spin 3.6s linear infinite;
+    mask: radial-gradient(circle, #000 0%, #000 100%);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .radar .pip {
+    position: absolute; width: 5px; height: 5px; background: var(--blue);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--blue);
+    animation: blip 3.6s linear infinite;
+    opacity: 0;
+  }
+  .radar .pip.p1 { top: 28%; left: 62%; animation-delay: .8s; }
+  .radar .pip.p2 { top: 70%; left: 36%; animation-delay: 2.1s; }
+  .radar .pip.p3 { top: 44%; left: 78%; animation-delay: 3.0s; }
+  @keyframes blip { 0%, 92% { opacity: 0; } 5% { opacity: 1; } 60% { opacity: .3; } }
+  .radar .crosshair {
+    position: absolute; left: 50%; top: 50%;
+    width: 14px; height: 14px;
+    border: 1px solid var(--paper);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  /* loading log */
+  .log { font-family: var(--mono); font-size: 13px; line-height: 2.0; letter-spacing: .08em; text-transform: uppercase; }
+  .log .line { display: grid; grid-template-columns: 24px 1fr 80px; gap: 14px; align-items: center; opacity: 0; transition: opacity .4s; color: var(--grey); }
+  .log .line.on { opacity: 1; }
+  .log .line.done { color: var(--paper); }
+  .log .line .marker { color: var(--blue); }
+  .log .line .dots { color: var(--grey); letter-spacing: .04em; }
+  .log .line .status { text-align: right; font-size: 11px; }
+  .log .line.done .status { color: var(--blue); }
+
+  /* progress block */
+  #p2 .progress {
+    border-left: 1px solid var(--rule);
+    padding-left: 30px;
+    font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase;
+  }
+  #p2 .progress b { color: var(--paper); display: block; font-weight: 500; margin-bottom: 8px; letter-spacing: .14em; }
+  #p2 .progress .row { padding: 10px 0; border-bottom: 1px dashed var(--rule); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  #p2 .progress .row:last-child { border-bottom: 0; }
+  #p2 .progress .row .v { color: var(--paper); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+  #p2 .progress .bar { height: 1px; background: var(--rule); margin-top: 22px; position: relative; overflow: hidden; }
+  #p2 .progress .bar i { display: block; height: 100%; width: 0; background: var(--paper); transition: width .25s; }
+  #p2 .progress .pct { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: var(--grey); }
+  #p2 .progress .pct .n { color: var(--paper); font-variant-numeric: tabular-nums; }
+
+  #p2 .bottom {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    border-top: 1px solid var(--rule); padding-top: 14px;
+    font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  }
+  #p2 .bottom b { display: block; color: var(--paper); font-weight: 500; margin-bottom: 4px; }
+
+  /* ─────────── PHASE 3 — IDENTITY ASSIGNMENT ─────────── */
+  #p3 {
+    padding: 28px 32px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    font-family: var(--mono);
+  }
+  #p3 .top {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--grey); border-bottom: 1px solid var(--rule); padding-bottom: 14px;
+  }
+  #p3 .top b { color: var(--paper); font-weight: 500; }
+  #p3 .top .c { text-align: center; }
+  #p3 .top .r { text-align: right; }
+
+  #p3 .body {
+    display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 60px;
+    align-items: center; padding: 60px 0;
+  }
+  #p3 .lside, #p3 .rside {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey);
+    line-height: 1.9;
+  }
+  #p3 .lside b, #p3 .rside b { display: block; color: var(--paper); font-weight: 500; margin-bottom: 6px; }
+  #p3 .rside { text-align: right; }
+  #p3 .lside .row, #p3 .rside .row { padding: 12px 0; border-bottom: 1px dashed var(--rule); }
+  #p3 .lside .row:last-child, #p3 .rside .row:last-child { border-bottom: 0; }
+
+  #p3 .seat-card {
+    text-align: center;
+    position: relative;
+    padding: 40px 20px;
+  }
+  #p3 .seat-card .corner { position: absolute; width: 14px; height: 14px; border: 1px solid var(--paper); }
+  #p3 .seat-card .corner.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  #p3 .seat-card .corner.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+  #p3 .seat-card .corner.bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+  #p3 .seat-card .corner.br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+  #p3 .seat-card .label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .3em;
+    color: var(--grey-lt); margin-bottom: 28px; text-transform: uppercase;
+  }
+  #p3 .seat-card .seat {
+    font-family: var(--sans);
+    font-size: clamp(140px, 22vw, 320px);
+    font-weight: 400; line-height: .9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--paper);
+  }
+  #p3 .seat-card .seat .digit { display: inline-block; font-variant-numeric: tabular-nums; }
+  #p3 .seat-card .meta {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .3em;
+    color: var(--grey-lt); margin-top: 32px; text-transform: uppercase;
+    display: flex; justify-content: center; gap: 14px; align-items: center;
+  }
+  #p3 .seat-card .meta .pulse { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; transform: scale(.7); } }
+
+  #p3 .checkin {
+    border-top: 1px solid var(--rule); padding-top: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: end;
+  }
+  #p3 .checkin .info {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    color: var(--grey); text-transform: uppercase;
+    line-height: 1.7; max-width: 60ch;
+  }
+  #p3 .checkin .info b { color: var(--paper); font-weight: 500; display: block; letter-spacing: .14em; margin-bottom: 8px; }
+
+  #p3 .check-form {
+    display: flex; flex-direction: column; gap: 14px; min-width: 420px;
+  }
+  #p3 .check-form .field {
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1.5px solid var(--paper); padding: 10px 0;
+  }
+  #p3 .check-form .field .tag {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+    color: var(--grey-lt); text-transform: uppercase; white-space: nowrap;
+  }
+  #p3 .check-form input {
+    flex: 1; font-family: var(--sans); font-size: 18px; letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+  #p3 .check-form input::placeholder { color: var(--grey); }
+  #p3 .check-form .submit {
+    margin-top: 6px;
+    display: inline-flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px; border: 1px solid var(--paper); color: var(--paper);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    transition: background .3s, color .3s;
+  }
+  #p3 .check-form .submit:hover { background: var(--paper); color: var(--ink); }
+  #p3 .check-form .submit::after { content:"→"; }
+  #p3 .check-form .submit.confirmed { background: var(--blue); color: var(--ink); border-color: var(--blue); }
+  #p3 .check-form .submit.confirmed::after { content:"✓"; }
+
+  /* ─────────── PHASE 4 — DEPARTURE INTERFACE ─────────── */
+  #p4 {
+    padding: 28px 32px 24px;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    min-height: 100vh;
+    font-family: var(--mono);
+    gap: 24px;
+  }
+  #p4 .header {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: 1px solid var(--rule); padding-bottom: 14px;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--grey);
+  }
+  #p4 .header b { color: var(--paper); font-weight: 500; }
+  #p4 .header .c { text-align: center; }
+  #p4 .header .r { text-align: right; }
+  #p4 .header .logo {
+    display: flex; align-items: center; gap: 12px; justify-content: center;
+    color: var(--paper); font-family: var(--sans); font-size: 14px; letter-spacing: .14em; font-weight: 500;
+  }
+  #p4 .header .logo img { width: 22px; height: 22px; filter: invert(1) brightness(2); }
+
+  /* meta row */
+  #p4 .metarow {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--grey);
+    border-bottom: 1px solid var(--rule); padding-bottom: 14px;
+  }
+  #p4 .metarow b { color: var(--paper); font-weight: 500; display: block; margin-bottom: 4px; letter-spacing: .14em; }
+
+  #p4 .center {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 30px 0;
+  }
+  #p4 .dep-label {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .5em;
+    color: var(--blue); text-transform: uppercase; margin-bottom: 26px;
+  }
+  #p4 .dep-label::before, #p4 .dep-label::after { content:"———"; color: var(--rule); margin: 0 18px; letter-spacing: 0; }
+
+  #p4 .countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    width: 100%; max-width: 1200px;
+  }
+  #p4 .countdown .unit {
+    border: 1px solid var(--rule);
+    background: var(--ink-2);
+    padding: 28px 20px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  #p4 .countdown .unit::before {
+    content:""; position: absolute; left: 0; right: 0; top: 50%;
+    height: 1px; background: #000;
+    opacity: .8;
+  }
+  #p4 .countdown .num {
+    font-family: var(--sans);
+    font-size: clamp(80px, 13vw, 200px);
+    font-weight: 400; line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+  }
+  #p4 .countdown .lbl {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .3em;
+    color: var(--grey-lt); text-transform: uppercase;
+    margin-top: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  #p4 .countdown .lbl .idx { color: var(--grey); font-variant-numeric: tabular-nums; }
+
+  /* manifest grid */
+  #p4 .manifest {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    border-top: 1px solid var(--rule); padding-top: 16px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--grey);
+  }
+  #p4 .manifest > div { grid-column: span 3; }
+  #p4 .manifest b { color: var(--paper); font-weight: 500; display: block; font-size: 10px; letter-spacing: .18em; margin-bottom: 6px; }
+  #p4 .manifest .v { color: var(--paper); font-size: 14px; letter-spacing: .08em; font-family: var(--sans); }
+  #p4 .manifest .v.blink { color: var(--blue); }
+  #p4 .manifest .v .dot { display: inline-block; width: 7px; height: 7px; background: var(--blue); border-radius: 50%; margin-right: 8px; vertical-align: middle; animation: pulse 1.4s ease-in-out infinite; }
+
+  #p4 .footer {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+    border-top: 1px solid var(--rule); padding-top: 14px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--grey);
+  }
+  #p4 .footer .c { text-align: center; }
+  #p4 .footer .r { text-align: right; }
+  #p4 .footer b { color: var(--paper); font-weight: 500; }
+
+  /* skip dev control */
+  .dev {
+    position: fixed; bottom: 14px; right: 14px; z-index: 1100;
+    display: flex; gap: 6px;
+    font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
+  }
+  .dev button {
+    padding: 6px 10px; border: 1px solid var(--rule); color: var(--grey);
+    transition: color .2s, border-color .2s;
+  }
+  .dev button:hover { color: var(--paper); border-color: var(--paper); }
+  .dev button.act { color: var(--blue); border-color: var(--blue); }
+
+  @media (max-width: 900px) {
+    body { cursor: auto; }
+    .cursor, .cursor-dot { display: none; }
+    button, a, input { cursor: pointer; }
+    #p2, #p3, #p4 { padding: 18px; }
+    #p2 .top, #p3 .top { grid-template-columns: 1fr 1fr; font-size: 10px; }
+    #p2 .top .r, #p3 .top .r { display: none; }
+    #p2 .center, #p3 .body { grid-template-columns: 1fr; gap: 30px; }
+    #p2 .progress { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 24px; }
+    #p2 .bottom { grid-template-columns: 1fr 1fr; }
+    #p3 .lside, #p3 .rside { text-align: left; }
+    #p3 .checkin { grid-template-columns: 1fr; }
+    #p3 .check-form { min-width: 0; }
+    #p4 .countdown { grid-template-columns: repeat(2, 1fr); }
+    #p4 .manifest > div { grid-column: span 6; }
+    #p4 .header, #p4 .footer { grid-template-columns: 1fr; gap: 6px; text-align: left !important; }
+    #p4 .header .c, #p4 .header .r, #p4 .footer .c, #p4 .footer .r { text-align: left; }
+    #p4 .metarow { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ─────────── PHASE 1 — DISORIENTATION ─────────── -->
+  <section class="phase active" id="p1">
+    <div class="connect">CONNECTING<span class="dots" id="p1-dots">...</span></div>
+  </section>
+
+  <!-- ─────────── PHASE 2 — SYSTEM LOADING ─────────── -->
+  <section class="phase" id="p2">
+    <div class="top">
+      <div><b>7C / SYSTEM</b> · INIT.0427</div>
+      <div class="c">SESSION <b>#0777-A</b></div>
+      <div class="r">NODE <b>BCN-01</b> · 41°23′N 002°11′E</div>
+    </div>
+
+    <div class="center">
+      <div class="radar">
+        <div class="x"></div><div class="y"></div>
+        <div class="sweep"></div>
+        <div class="pip p1"></div>
+        <div class="pip p2"></div>
+        <div class="pip p3"></div>
+        <div class="crosshair"></div>
+      </div>
+
+      <div class="log">
+        <div class="line" data-line="0">
+          <span class="marker">&gt;</span>
+          <span><span class="lbl">SCANNING ENVIRONMENT</span> <span class="dots">..............</span></span>
+          <span class="status">PENDING</span>
+        </div>
+        <div class="line" data-line="1">
+          <span class="marker">&gt;</span>
+          <span><span class="lbl">LOCATING SEAT</span> <span class="dots">....................</span></span>
+          <span class="status">PENDING</span>
+        </div>
+        <div class="line" data-line="2">
+          <span class="marker">&gt;</span>
+          <span><span class="lbl">ASSIGNING PASSENGER</span> <span class="dots">..............</span></span>
+          <span class="status">PENDING</span>
+        </div>
+        <div class="line" data-line="3">
+          <span class="marker">&gt;</span>
+          <span><span class="lbl">SYNC DEPARTURES BOARD</span> <span class="dots">............</span></span>
+          <span class="status">PENDING</span>
+        </div>
+        <div class="line" data-line="4">
+          <span class="marker">&gt;</span>
+          <span><span class="lbl">CALIBRATING TIMECODE</span> <span class="dots">.............</span></span>
+          <span class="status">PENDING</span>
+        </div>
+      </div>
+
+      <div class="progress">
+        <b>SYSTEM STATUS</b>
+        <div class="row"><span>UPLINK</span><span class="v" id="p2-uplink">— —</span></div>
+        <div class="row"><span>LATENCY</span><span class="v" id="p2-lat">000 MS</span></div>
+        <div class="row"><span>NODES SCANNED</span><span class="v" id="p2-nodes">000 / 777</span></div>
+        <div class="row"><span>HANDSHAKE</span><span class="v" id="p2-hs">— —</span></div>
+        <div class="bar"><i id="p2-bar"></i></div>
+        <div class="pct"><span>/INIT</span><span class="n" id="p2-pct">000%</span></div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div><b>OPERATION</b> COLLECTION INIT</div>
+      <div><b>RUNTIME</b> <span id="p2-runtime">00:00.0</span></div>
+      <div><b>OPERATOR</b> 7C.STUDIOS</div>
+      <div style="text-align:right;"><b>BUILD</b> AW26 / 03</div>
+    </div>
+  </section>
+
+  <!-- ─────────── PHASE 3 — IDENTITY ASSIGNMENT ─────────── -->
+  <section class="phase" id="p3">
+    <div class="top">
+      <div><b>7C / IDENTITY</b> · ISSUED</div>
+      <div class="c">SESSION <b>#0777-A</b> · CHECK-IN</div>
+      <div class="r">PASSENGER <b id="p3-pid">— — — —</b></div>
+    </div>
+
+    <div class="body">
+      <div class="lside">
+        <div class="row"><b>FLIGHT</b>7C · AW26</div>
+        <div class="row"><b>CABIN</b>RED-EYE / 03</div>
+        <div class="row"><b>CLASS</b>TRANSIT</div>
+        <div class="row"><b>BAGGAGE</b>12 KG / 07 ITEMS</div>
+      </div>
+
+      <div class="seat-card">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="label">— SEAT ASSIGNED —</div>
+        <div class="seat">
+          <span class="digit">7</span><span class="digit">C</span>
+        </div>
+        <div class="meta">
+          <span class="pulse"></span>
+          STATUS: IN TRANSIT
+        </div>
+      </div>
+
+      <div class="rside">
+        <div class="row"><b>ROW</b>07</div>
+        <div class="row"><b>POSITION</b>C · WINDOW</div>
+        <div class="row"><b>BOARDING GROUP</b>03</div>
+        <div class="row"><b>ISSUED</b><span id="p3-issued">— — —</span></div>
+      </div>
+    </div>
+
+    <div class="checkin">
+      <div class="info">
+        <b>— CHECK-IN —</b>
+        Confirm your position within the system.<br>
+        Receive notification when the AW26 collection departs the gate. Transit signal only — no promotional noise.
+      </div>
+      <form class="check-form" id="checkin">
+        <div class="field">
+          <span class="tag">PASSENGER /</span>
+          <input type="text" placeholder="FULL NAME" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <span class="tag">EMAIL /</span>
+          <input type="email" placeholder="you@somewhere.net" autocomplete="off" required>
+        </div>
+        <button class="submit" type="submit" id="p3-submit">CONFIRM BOARDING</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─────────── PHASE 4 — DEPARTURE INTERFACE ─────────── -->
+  <section class="phase" id="p4">
+    <div class="header">
+      <div><b>FLIGHT</b> 7C · AW26 · 03</div>
+      <div class="logo"><img src="assets/logo.png" alt="7C"/> 7C STUDIOS</div>
+      <div class="r"><b>LOCAL</b> <span id="p4-local">00:00:00</span> CET</div>
+    </div>
+
+    <div class="metarow">
+      <div><b>GATE</b>7C</div>
+      <div><b>TERMINAL</b>03</div>
+      <div><b>DESTINATION</b>UNDEFINED</div>
+      <div><b>SEAT</b>7C</div>
+      <div><b>BOARDING GROUP</b>03</div>
+      <div style="text-align:right;"><b>STATUS</b><span style="color: var(--blue);">● BOARDING</span></div>
+    </div>
+
+    <div class="center">
+      <div class="dep-label">DEPARTURE IN</div>
+      <div class="countdown">
+        <div class="unit">
+          <div class="num" id="cd-d">00</div>
+          <div class="lbl"><span>DAYS</span><span class="idx">/ DD</span></div>
+        </div>
+        <div class="unit">
+          <div class="num" id="cd-h">00</div>
+          <div class="lbl"><span>HOURS</span><span class="idx">/ HH</span></div>
+        </div>
+        <div class="unit">
+          <div class="num" id="cd-m">00</div>
+          <div class="lbl"><span>MINUTES</span><span class="idx">/ MM</span></div>
+        </div>
+        <div class="unit">
+          <div class="num" id="cd-s">00</div>
+          <div class="lbl"><span>SECONDS</span><span class="idx">/ SS</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="manifest">
+      <div><b>FLIGHT</b><div class="v">7C / AW26 / 03</div></div>
+      <div><b>GATE</b><div class="v">7C</div></div>
+      <div><b>DESTINATION</b><div class="v">UNDEFINED</div></div>
+      <div><b>STATUS</b><div class="v blink"><span class="dot"></span>BOARDING</div></div>
+    </div>
+
+    <div class="footer">
+      <div><b>© 7C STUDIOS MMXXVI</b> · ALL RIGHTS RESERVED</div>
+      <div class="c">EVERYWHERE / NOWHERE</div>
+      <div class="r"><b>PASSENGER</b> <span id="p4-pid">— — — —</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- dev controls -->
+<div class="dev" id="dev">
+  <button data-go="1">P1 / CONNECT</button>
+  <button data-go="2">P2 / LOAD</button>
+  <button data-go="3">P3 / IDENTITY</button>
+  <button data-go="4">P4 / DEPARTURE</button>
+</div>
+
+<script>
+  /* ─────────── CURSOR ─────────── */
+  if (!window.matchMedia('(max-width: 900px)').matches) {
+    const cur = document.createElement('div'); cur.className = 'cursor';
+    const dot = document.createElement('div'); dot.className = 'cursor-dot';
+    document.body.appendChild(cur); document.body.appendChild(dot);
+    let tx = innerWidth/2, ty = innerHeight/2, cx = tx, cy = ty;
+    addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; dot.style.transform = `translate(${tx}px,${ty}px) translate(-50%,-50%)`; });
+    (function loop(){ cx += (tx-cx)*.18; cy += (ty-cy)*.18; cur.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+    const bindHover = () => {
+      document.querySelectorAll('a, button, input').forEach(el => {
+        if (el.dataset.hb) return; el.dataset.hb = '1';
+        el.addEventListener('mouseenter', () => dot.classList.add('hov'));
+        el.addEventListener('mouseleave', () => dot.classList.remove('hov'));
+      });
+    };
+    bindHover();
+    new MutationObserver(bindHover).observe(document.body, { subtree: true, childList: true });
+  }
+
+  /* ─────────── PHASE CONTROL ─────────── */
+  const phases = ['p1','p2','p3','p4'];
+  function go(n) {
+    phases.forEach((id, i) => {
+      document.getElementById(id).classList.toggle('active', (i+1) === n);
+    });
+    document.querySelectorAll('#dev button').forEach(b => b.classList.toggle('act', +b.dataset.go === n));
+    if (n === 2) startPhase2();
+    if (n === 3) startPhase3();
+    if (n === 4) startPhase4();
+  }
+  document.querySelectorAll('#dev button').forEach(b => b.addEventListener('click', () => go(+b.dataset.go)));
+
+  /* ─────────── P1 — DISORIENTATION ─────────── */
+  // dot animation
+  (() => {
+    const el = document.getElementById('p1-dots');
+    const seq = ['', '.', '..', '...'];
+    let i = 0;
+    setInterval(() => { el.textContent = seq[i++ % seq.length]; }, 380);
+  })();
+
+  // auto-progress: black for 1.6s, then text appears, then ~3.4s later → P2
+  setTimeout(() => go(2), 4800);
+
+  /* ─────────── P2 — SYSTEM LOADING ─────────── */
+  let p2Started = false;
+  function startPhase2() {
+    if (p2Started) return; p2Started = true;
+    const lines = document.querySelectorAll('#p2 .log .line');
+    const start = performance.now();
+
+    // runtime
+    const rt = document.getElementById('p2-runtime');
+    const rtTimer = setInterval(() => {
+      const t = (performance.now() - start) / 1000;
+      const m = Math.floor(t / 60).toString().padStart(2, '0');
+      const s = (t % 60).toFixed(1).padStart(4, '0');
+      rt.textContent = `${m}:${s}`;
+    }, 100);
+
+    // status block
+    const uplink = document.getElementById('p2-uplink');
+    const lat = document.getElementById('p2-lat');
+    const nodes = document.getElementById('p2-nodes');
+    const hs = document.getElementById('p2-hs');
+    const bar = document.getElementById('p2-bar');
+    const pct = document.getElementById('p2-pct');
+
+    setTimeout(() => uplink.textContent = 'OK · 7C.NET', 600);
+    setTimeout(() => hs.textContent = 'SHA/256 · OK', 1800);
+
+    let n = 0;
+    const tickStat = () => {
+      n += 2 + Math.random() * 6;
+      if (n > 100) n = 100;
+      bar.style.width = n + '%';
+      pct.textContent = String(Math.floor(n)).padStart(3,'0') + '%';
+      lat.textContent = String(20 + Math.floor(Math.random()*40)).padStart(3,'0') + ' MS';
+      nodes.textContent = String(Math.floor(n*7.77)).padStart(3,'0') + ' / 777';
+      if (n < 100) setTimeout(tickStat, 80 + Math.random()*120);
+    };
+    setTimeout(tickStat, 400);
+
+    // line sequence
+    const labels = ['SCANNING ENVIRONMENT', 'LOCATING SEAT', 'ASSIGNING PASSENGER', 'SYNC DEPARTURES BOARD', 'CALIBRATING TIMECODE'];
+    lines.forEach((line, i) => {
+      setTimeout(() => {
+        line.classList.add('on');
+        line.querySelector('.status').textContent = '...';
+      }, 200 + i * 1100);
+      setTimeout(() => {
+        line.classList.add('done');
+        line.querySelector('.status').textContent = i === 1 ? 'SEAT 7C' : (i === 2 ? '#0777-A' : 'OK');
+      }, 200 + i * 1100 + 750);
+    });
+
+    // advance
+    setTimeout(() => { clearInterval(rtTimer); go(3); }, 200 + 5 * 1100 + 1400);
+  }
+
+  /* ─────────── P3 — IDENTITY ─────────── */
+  let p3Started = false;
+  function startPhase3() {
+    if (p3Started) return; p3Started = true;
+
+    // generate passenger id
+    const pid = '#0' + Math.floor(100 + Math.random() * 677).toString().padStart(3, '0') + '-A';
+    document.getElementById('p3-pid').textContent = pid;
+    document.getElementById('p4-pid').textContent = pid;
+
+    // issued date
+    const d = new Date();
+    const iss = new Intl.DateTimeFormat('en-GB', { day:'2-digit', month:'short', year:'2-digit' }).format(d).toUpperCase();
+    document.getElementById('p3-issued').textContent = iss + ' / ' + d.toTimeString().slice(0,5);
+
+    // form
+    const form = document.getElementById('checkin');
+    const submit = document.getElementById('p3-submit');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submit.classList.add('confirmed');
+      submit.textContent = 'BOARDING CONFIRMED';
+      // advance to phase 4 after a beat
+      setTimeout(() => go(4), 1400);
+    });
+
+    // skip-to-departure shortcut for users who don't want to enter info:
+    // (no skip per spec — they must check in. But allow Enter on dev panel.)
+  }
+
+  /* ─────────── P4 — DEPARTURE COUNTDOWN ─────────── */
+  let p4Started = false;
+  function startPhase4() {
+    if (p4Started) return; p4Started = true;
+
+    // Target: 14 days from now, at 23:55 local
+    const target = new Date();
+    target.setDate(target.getDate() + 14);
+    target.setHours(23, 55, 0, 0);
+
+    const dEl = document.getElementById('cd-d');
+    const hEl = document.getElementById('cd-h');
+    const mEl = document.getElementById('cd-m');
+    const sEl = document.getElementById('cd-s');
+    const local = document.getElementById('p4-local');
+
+    const tick = () => {
+      const now = new Date();
+      let diff = Math.max(0, target - now);
+      const dd = Math.floor(diff / 86400000); diff -= dd * 86400000;
+      const hh = Math.floor(diff / 3600000); diff -= hh * 3600000;
+      const mm = Math.floor(diff / 60000); diff -= mm * 60000;
+      const ss = Math.floor(diff / 1000);
+      dEl.textContent = String(dd).padStart(2, '0');
+      hEl.textContent = String(hh).padStart(2, '0');
+      mEl.textContent = String(mm).padStart(2, '0');
+      sEl.textContent = String(ss).padStart(2, '0');
+      local.textContent = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Europe/Madrid' }).format(now);
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "7c-studios",
+  "private": true,
+  "homepage": "https://emanueleromito.github.io/7c-site",
+  "version": "1.0.0",
+  "description": "7C Studios — Daily Travel Wear. Front-end repository for the 7C clothing brand.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "devDependencies": {
+    "vite": "^6.3.3",
+    "gh-pages": "^6.3.0"
+  },
+  "keywords": ["7c", "clothing", "fashion", "editorial"],
+  "author": "7C Studios"
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="shared.css">
+<style>
+  html, body { background: #ffffff; }
+  
+  /* Boarding Pass Section */
+  .boarding-pass {
+    margin: 24px 32px 24px;
+    border: 1px solid var(--ink);
+    display: grid; grid-template-columns: 1fr 280px;
+  }
+  .bp-main { padding: 32px; border-right: 1px dashed var(--ink); }
+  .bp-side { padding: 32px; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; }
+  .bp-title { font-size: clamp(32px, 4vw, 56px); font-weight: 400; line-height: .9; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 32px; font-family: var(--druk); }
+  .bp-title em { font-style: normal; color: var(--grey); }
+  .bp-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-transform: uppercase; }
+  .bp-row b { display: block; font-weight: 500; font-size: 10px; color: var(--grey); margin-bottom: 6px; letter-spacing: .18em; font-family: var(--mono); }
+  .bp-row .val { color: var(--ink); font-size: 14px; font-family: "Helvetica Neue", sans-serif; letter-spacing: -0.01em; }
+  .bp-side .s-row { margin-bottom: 24px; text-transform: uppercase; }
+  .bp-side .s-row b { display: block; font-weight: 500; font-size: 10px; color: var(--grey); margin-bottom: 6px; letter-spacing: .18em; font-family: var(--mono); }
+  .bp-side .s-row .val { font-family: "Helvetica Neue", sans-serif; font-size: 14px; color: var(--ink); letter-spacing: -0.01em; }
+  .bp-actions { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+  .bp-actions a { border: 1px solid var(--ink); padding: 12px 16px; text-align: center; font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; transition: background .2s, color .2s; }
+  .bp-actions a:hover { background: var(--ink); color: #fff; }
+  .bp-actions a.invert { background: var(--ink); color: #fff; }
+  .bp-actions a.invert:hover { background: transparent; color: var(--ink); }
+
+  /* Archive Title */
+  .archive-title { padding: 24px 32px; }
+  .archive-title h3 { font-family: var(--druk); font-size: 20px; font-weight: 900; letter-spacing: -0.01em; text-transform: uppercase; margin: 0; }
+
+  /* Filter Bar */
+  .filter-bar {
+    padding: 18px 32px; border-bottom: 1px solid var(--rule);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    display: flex; gap: 22px; align-items: center; color: var(--grey);
+  }
+  .filter-bar .f { cursor: pointer; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: color .2s; }
+  .filter-bar .f.on { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* Records List */
+  .records { padding: 0; border-bottom: 1px solid var(--rule); }
+  .records .col-head, .record-row { padding-left: 32px; padding-right: 32px; }
+  .records .col-head {
+    display: grid; grid-template-columns: 60px 1.5fr 80px; gap: 20px;
+    padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--rule);
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--grey); text-transform: uppercase;
+  }
+  .record-row {
+    display: grid; grid-template-columns: 60px 1.5fr 80px; gap: 20px;
+    padding-top: 26px; padding-bottom: 26px; border-bottom: 1px solid var(--grey-lt);
+    align-items: center; cursor: pointer; transition: background .25s, padding-left .25s;
+  }
+  .record-row:last-child { border-bottom: 0; }
+  .record-row:hover { background: rgba(0,0,0,.02); padding-left: 40px; }
+  .record-row .no { font-family: var(--mono); font-size: 11px; color: var(--grey); letter-spacing: .1em; }
+  .record-row .g-block { display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: center; }
+  .record-row .g-sil { width: 52px; height: 68px; background: #e3e1dc; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  .record-row .g-sil svg { width: 80%; height: 80%; }
+  .record-row .g-meta .name { font-family: "Helvetica Neue", sans-serif; font-size: 18px; letter-spacing: -0.02em; text-transform: uppercase; font-weight: 400; }
+  .record-row .g-meta .cat { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; margin-top: 4px; }
+  .record-row .arr {
+    justify-self: end; width: 40px; height: 40px; border: 1px solid var(--ink); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; transition: background .3s, color .3s;
+  }
+  .record-row:hover .arr { background: var(--ink); color: #fff; }
+  .record-row .arr::before { content:"→"; font-size: 14px; }
+
+  /* Footer Adjustment for Archive */
+  site-footer::part(footer) { border-top: 0 !important; }
+  /* Since I didn't use Shadow DOM for SiteFooter, I'll just target the inner class */
+  .site-footer { border-top: 0 !important; }
+
+  @media (max-width: 900px) {
+    .boarding-pass { grid-template-columns: 1fr; margin: 30px 18px; }
+    .archive-title, .filter-bar, .records .col-head, .record-row { padding-left: 18px; padding-right: 18px; }
+    .records .col-head { grid-template-columns: 40px 1fr 60px; }
+    .record-row { grid-template-columns: 40px 1fr 60px; }
+  }
+</style>
+</head>
+<body>
+
+<site-header></site-header>
+
+<section class="boarding-pass reveal">
+  <div class="bp-main">
+    <div class="bp-title">PASSENGER<br><em>PROFILE.</em></div>
+    <div class="bp-row">
+      <div><b>PASSENGER</b><span class="val" id="ms-name">—</span></div>
+      <div><b>EMAIL</b><span class="val" id="bp-email">—</span></div>
+      <div><b>ISSUED</b><span class="val" id="ms-iss">—</span></div>
+    </div>
+    <div class="bp-row" style="margin-top: 24px;">
+      <div><b>DEFAULT ADDRESS</b><span class="val">FLORENCE, IT</span></div>
+      <div><b>PAYMENT</b><span class="val">MASTERCARD · 7777</span></div>
+      <div><b>LOCAL TIME</b><span class="val" id="ms-time">—</span></div>
+    </div>
+  </div>
+  <div class="bp-side">
+    <div class="s-row">
+      <b>GARMENTS IN ARCHIVE</b>
+      <span class="val" id="stat-count">00</span>
+    </div>
+    <div class="bp-actions">
+      <a href="#" id="signout" class="invert">SIGN OUT</a>
+      <a href="#">EDIT PROFILE</a>
+    </div>
+  </div>
+</section>
+
+<div class="archive-title">
+  <h3>PRODUCT ARCHIVE</h3>
+</div>
+
+<section class="filter-bar">
+  <span>SORT /</span>
+  <span class="f on">A–Z</span>
+</section>
+
+<section class="records">
+  <div class="col-head">
+    <div>N°</div>
+    <div>GARMENT</div>
+    <div></div>
+  </div>
+  <div id="rows"></div>
+</section>
+
+<site-footer></site-footer>
+
+<script src="shared.js"></script>
+<script>
+  SevenC.ensureDemo();
+  const u = SevenC.getUser();
+  if (!u) { location.href = 'record.html'; throw new Error('no user'); }
+
+  const sils = {
+    jacket: `<svg viewBox="0 0 100 130" fill="none" stroke="currentColor" stroke-width=".6"><path d="M30 25 L20 50 L22 120 L78 120 L80 50 L70 25 L60 18 L55 22 L50 25 L45 22 L40 18 Z"/><path d="M50 25 L50 120"/></svg>`,
+    pants: `<svg viewBox="0 0 100 140" fill="none" stroke="currentColor" stroke-width=".6"><path d="M30 10 L30 130 L46 130 L50 60 L54 130 L70 130 L70 10 Z"/></svg>`,
+    knit: `<svg viewBox="0 0 100 120" fill="none" stroke="currentColor" stroke-width=".6"><path d="M28 22 L20 50 L28 55 L28 112 L72 112 L72 55 L80 50 L72 22 L58 18 L50 24 L42 18 Z"/></svg>`,
+  };
+
+  document.getElementById('ms-name').textContent = u.name;
+  document.getElementById('bp-email').textContent = u.email;
+  document.getElementById('ms-iss').textContent = new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'2-digit',timeZone:'Europe/Madrid'}).format(new Date(u.joined)).toUpperCase();
+
+  startClock(document.getElementById('ms-time'), 'Europe/Madrid', 'BCN · ');
+
+  const archive = SevenC.getArchive();
+  document.getElementById('stat-count').textContent = String(archive.length).padStart(2,'0');
+
+  const rowsEl = document.getElementById('rows');
+  rowsEl.innerHTML = archive.map((g, i) => `
+    <a href="garment.html?no=${encodeURIComponent(g.no)}" class="record-row">
+      <div class="no">${String(i+1).padStart(2,'0')}</div>
+      <div class="g-block">
+        <div class="g-sil">${sils[g.silhouette] || sils.jacket}</div>
+        <div class="g-meta">
+          <div class="name">${g.name}</div>
+          <div class="cat">${g.cat} · ${g.no}</div>
+        </div>
+      </div>
+      <div class="arr"></div>
+    </a>
+  `).join('');
+
+  document.getElementById('signout').addEventListener('click', e => {
+    e.preventDefault();
+    if (confirm('SIGN OUT OF 7C ARCHIVE?')) {
+      localStorage.clear();
+      location.href = 'index.html';
+    }
+  });
+</script>
+</body>
+</html>

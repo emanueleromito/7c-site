@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/logo-new.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/druk-wide-bold" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+
+  :root {
+    --druk: "Druk Wide Bold", "Big Shoulders Display", "Helvetica Neue", sans-serif;
+  }
+
+  html, body { background: #ffffff; color: #0a0a0a; font-family: "Helvetica Neue", "Inter", sans-serif; font-weight: 300; }
+
+
+
+  /* Layout */
+  .checkin {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 76px);
+  }
+  .ci-left, .ci-right {
+    padding: 24px 48px;
+    display: flex; flex-direction: column; gap: 24px;
+    justify-content: center;
+  }
+  .ci-left { border-right: 1px solid #e6e3dc; background: #ffffff; }
+  .ci-right { background: #ffffff; }
+
+
+  .ci-h1 {
+    font-family: var(--druk); font-weight: 900;
+    font-size: clamp(21px, 2.4vw, 36px);
+    line-height: .95; letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .ci-h1 em { font-style: normal; color: #b8b6b1; }
+  .ci-lede {
+    font-family: "Helvetica Neue", "Inter", sans-serif;
+    font-weight: 300;
+    font-size: 13px; line-height: 1.55; color: #2a2a2a;
+    max-width: 44ch;
+  }
+
+  /* Steps */
+  .steps {
+    display: flex; flex-direction: column;
+    border-top: 1px solid #e6e3dc;
+  }
+  .step {
+    display: grid; grid-template-columns: 60px 1fr 72px;
+    gap: 15px; align-items: start;
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e3dc;
+  }
+  .step .num {
+    font-family: var(--druk); font-weight: 900;
+    font-size: 21px; line-height: 1; letter-spacing: -0.005em;
+    color: #0a0a0a;
+  }
+  .step .body h3 {
+    font-family: var(--druk); font-weight: 900;
+    font-size: 12px; line-height: 1.15; letter-spacing: -0.005em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .step .body p {
+    font-family: "Helvetica Neue", "Inter", sans-serif;
+    font-weight: 300; font-size: 10px; line-height: 1.45; color: #3a3a3a;
+    max-width: 38ch;
+  }
+  .step .ill {
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step .ill svg { width: 100%; height: 100%; }
+
+  /* Right panel — login */
+  .ci-card {
+    border: 1px solid #0a0a0a;
+    padding: 24px 24px 18px;
+    background: #ffffff;
+    max-width: 360px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .ci-card .head {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+    color: #8a8a8a; margin-bottom: 22px;
+  }
+  .ci-card h2 {
+    font-family: var(--druk); font-weight: 900;
+    font-size: clamp(18px, 1.65vw, 24px);
+    letter-spacing: -0.005em; text-transform: uppercase; line-height: 1.05;
+  }
+  .ci-card .subline {
+    margin-top: 12px;
+    font-family: "Helvetica Neue", "Inter", sans-serif;
+    font-weight: 300; font-size: 10px; line-height: 1.5; color: #3a3a3a;
+    max-width: 44ch;
+  }
+
+  .ci-form { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .ci-field { display: flex; flex-direction: column; gap: 10px; }
+  .ci-field label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 8px; letter-spacing: .24em; text-transform: uppercase; color: #8a8a8a;
+  }
+  .ci-field input {
+    font-family: "Helvetica Neue", "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 14px; letter-spacing: .01em;
+    padding: 6px 0;
+    border: 0; border-bottom: 1px solid #0a0a0a;
+    background: transparent; color: #0a0a0a;
+    outline: none;
+  }
+  .ci-field input::placeholder { color: #c9c7c2; font-weight: 300; }
+  .ci-field input:focus { border-bottom-color: #0a0a0a; }
+
+  .ci-submit {
+    display: inline-flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 12px 18px;
+    background: #0a0a0a; color: #ffffff; border: 1px solid #0a0a0a;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+    transition: background .25s, color .25s;
+    width: 100%;
+  }
+  .ci-submit:hover { background: #ffffff; color: #0a0a0a; }
+  .ci-submit .arr { transition: transform .25s; }
+  .ci-submit:hover .arr { transform: translateX(4px); }
+
+  .ci-foot-note {
+    margin-top: 20px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #8a8a8a;
+    line-height: 1.7;
+  }
+  .ci-foot-note a { border-bottom: 1px solid #0a0a0a; color: #0a0a0a; }
+
+  .ci-divider {
+    margin: 28px 0 22px;
+    display: flex; align-items: center; gap: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px; letter-spacing: .26em; color: #8a8a8a; text-transform: uppercase;
+  }
+  .ci-divider::before, .ci-divider::after {
+    content: ""; flex: 1; height: 1px; background: #e6e3dc;
+  }
+
+  .ci-alt {
+    text-align: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #3a3a3a;
+  }
+  .ci-alt a { border-bottom: 1px solid #0a0a0a; color: #0a0a0a; padding-bottom: 2px; }
+
+  .ci-ok {
+    margin-top: 22px; padding: 18px 0;
+    font-family: var(--druk); font-weight: 900;
+    font-size: 18px; letter-spacing: .04em; text-transform: uppercase;
+    color: #0a0a0a; display: none;
+    border-top: 1px dashed #c9c7c2;
+  }
+  .ci-card.sent .ci-ok { display: block; }
+  .ci-card.sent .ci-form, .ci-card.sent .ci-divider, .ci-card.sent .ci-alt { opacity: .35; pointer-events: none; }
+
+  /* Footer */
+  .foot-mini {
+    padding: 22px 48px; border-top: 1px solid #e6e3dc;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #8a8a8a;
+  }
+  .foot-mini .c2 { text-align: center; }
+  .foot-mini .c3 { text-align: right; }
+
+  @media (max-width: 980px) {
+    .nav { grid-template-columns: 1fr auto 1fr; padding: 18px 20px; }
+    .nav .nav-l, .nav .nav-r { display: none; }
+    .nav .nav-l.show-mobile, .nav .nav-r.show-mobile { display: block; }
+    .checkin { grid-template-columns: 1fr; }
+    .ci-left, .ci-right { padding: 48px 20px; }
+    .ci-left { border-right: 0; border-bottom: 1px solid #e6e3dc; }
+    .step { grid-template-columns: 56px 1fr; }
+    .step .ill { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER (mirrors homepage via Web Component) -->
+<site-header></site-header>
+
+<section class="checkin">
+  <!-- LEFT: Tutorial -->
+  <div class="ci-left">
+    <div>
+      <h1 class="ci-h1">CLAIM<br>YOUR <em>PIECE.</em></h1>
+      <p class="ci-lede" style="margin-top:24px;">Every 7C garment travels with a small card tucked into a hidden sleeve pocket. Use it to register your piece to your archive — it takes about a minute.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <div class="body">
+          <h3>Find the card</h3>
+          <p>Inside every 7C piece there is a small interior pocket — usually on the inside of the left sleeve, near the cuff. Inside the pocket you will find a folded card.</p>
+        </div>
+        <div class="ill">
+          <svg viewBox="0 0 96 96" fill="none" stroke="#0a0a0a" stroke-width="1.4">
+            <path d="M22 18 L18 36 L24 78 L72 78 L78 36 L74 18 L62 14 L48 22 L34 14 Z"/>
+            <path d="M48 22 L48 78"/>
+            <rect x="55" y="44" width="14" height="20" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">02</div>
+        <div class="body">
+          <h3>Open the card</h3>
+          <p>The card carries a printed code and a QR. The code is unique to your garment — its serial, edition number and origin run.</p>
+        </div>
+        <div class="ill">
+          <svg viewBox="0 0 96 96" fill="none" stroke="#0a0a0a" stroke-width="1.4">
+            <rect x="14" y="22" width="68" height="52" rx="2"/>
+            <rect x="22" y="32" width="22" height="22"/>
+            <path d="M22 36 L44 36 M22 42 L44 42 M22 48 L34 48"/>
+            <path d="M52 32 L74 32 M52 38 L70 38 M52 44 L74 44 M52 50 L66 50 M22 60 L74 60 M22 66 L60 66"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">03</div>
+        <div class="body">
+          <h3>Scan the QR</h3>
+          <p>Open your phone camera and scan the QR on the card. It will bring you to a private record page reserved for that exact piece.</p>
+        </div>
+        <div class="ill">
+          <svg viewBox="0 0 96 96" fill="none" stroke="#0a0a0a" stroke-width="1.4">
+            <path d="M14 30 L14 18 L26 18 M70 18 L82 18 L82 30 M82 66 L82 78 L70 78 M26 78 L14 78 L14 66"/>
+            <rect x="28" y="28" width="14" height="14"/>
+            <rect x="54" y="28" width="14" height="14"/>
+            <rect x="28" y="54" width="14" height="14"/>
+            <path d="M54 54 L60 54 L60 60 M66 54 L66 60 L60 60 M54 66 L60 66 M66 66 L66 64"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">04</div>
+        <div class="body">
+          <h3>Sign in to claim</h3>
+          <p>Sign in with your email on the right. New or returning — same flow. We send a magic link, and the garment is added to your archive.</p>
+        </div>
+        <div class="ill">
+          <svg viewBox="0 0 96 96" fill="none" stroke="#0a0a0a" stroke-width="1.4">
+            <rect x="14" y="28" width="68" height="44" rx="2"/>
+            <path d="M14 32 L48 56 L82 32"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Login -->
+  <div class="ci-right">
+    <div class="ci-card" id="ci-card">
+      <div class="head">SIGN IN / SIGN UP</div>
+      <h2>ENTER YOUR<br>EMAIL TO BOARD.</h2>
+      <p class="subline">One flow for new and returning passengers. We send a single-use link. No password, no account setup.</p>
+
+      <form class="ci-form" id="ci-form" autocomplete="on" novalidate>
+        <div class="ci-field">
+          <label for="ci-email">EMAIL</label>
+          <input id="ci-email" name="email" type="email" placeholder="you@somewhere.net" required autocomplete="email" />
+        </div>
+        <div class="ci-field">
+          <label for="ci-name">NAME (OPTIONAL — NEW PASSENGERS)</label>
+          <input id="ci-name" name="name" type="text" placeholder="How the archive should address you" autocomplete="name" />
+        </div>
+        <button class="ci-submit" type="submit">
+          <span>SEND MAGIC LINK</span>
+          <span class="arr">→</span>
+        </button>
+      </form>
+
+      <div class="ci-divider">OR</div>
+      <div class="ci-alt">
+        Already received a link?<br>
+        <a href="#" id="ci-paste">PASTE TOKEN</a>
+      </div>
+
+      <div class="ci-foot-note">
+        BY CONTINUING YOU AGREE TO THE 7C <a href="#">ARCHIVE TERMS</a> AND <a href="#">PRIVACY NOTE</a>. WE DO NOT SELL OR LICENSE YOUR DATA.
+      </div>
+
+      <div class="ci-ok" id="ci-ok">✓ LINK SENT — CHECK YOUR INBOX.</div>
+    </div>
+  </div>
+</section>
+
+<div class="foot-mini">
+  <div class="c1">© 7C MMXXVI</div>
+  <div class="c2">EVERYWHERE — NOWHERE</div>
+  <div class="c3" id="c-time">—</div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+  // Hydrate from any pending garment (kept for compatibility)
+  // No left preview anymore — but we still pass the user through to activate.
+  const pending = JSON.parse(sessionStorage.getItem('7c_pending_garment') || 'null');
+
+  // Local clock
+  (function() {
+    const el = document.getElementById('c-time');
+    if (!el) return;
+    const f = () => el.textContent = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Europe/Rome'
+    }).format(new Date()) + ' · FLR';
+    f(); setInterval(f, 1000);
+  })();
+
+  // Form handler
+  const card = document.getElementById('ci-card');
+  const form = document.getElementById('ci-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('ci-email').value.trim();
+    const name = document.getElementById('ci-name').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('ci-email').focus();
+      return;
+    }
+    if (window.SevenC && SevenC.setUser) {
+      SevenC.setUser({ email, name: name || email.split('@')[0].toUpperCase(), joined: new Date().toISOString() });
+    }
+    card.classList.add('sent');
+    setTimeout(() => { location.href = 'archive.html'; }, 900);
+  });
+
+  document.getElementById('ci-paste').addEventListener('click', e => {
+    e.preventDefault();
+    location.href = 'archive.html';
+  });
+</script>
+</body>
+</html>

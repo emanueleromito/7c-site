@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .nav-minimal { grid-template-columns: auto 1fr auto; }
+  .nav-minimal .nav-c { justify-self: start; }
+  .nav-minimal .nav-status { justify-self: end; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); display: flex; align-items: center; gap: 8px; }
+  .nav-minimal .nav-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); display: block; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+
+  .record {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    padding: 60px 32px 40px;
+  }
+  .r-kicker {
+    grid-column: 1 / -1;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--grey);
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 30px;
+  }
+  .r-kicker .bull { width: 7px; height: 7px; background: var(--ink); border-radius: 50%; }
+  .r-kicker .sep { color: var(--grey-lt); }
+
+  .r-title {
+    grid-column: 1 / span 7;
+    font-size: clamp(56px, 7vw, 120px);
+    font-weight: 400; line-height: .9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+  .r-title em { font-style: normal; color: var(--grey); }
+  .r-title .sub {
+    font-size: clamp(14px, 1vw, 16px);
+    font-family: var(--mono); letter-spacing: .14em; color: var(--grey);
+    margin-top: 24px; text-transform: uppercase; line-height: 1.6;
+  }
+
+  .r-visual {
+    grid-column: 8 / span 5;
+    aspect-ratio: 3 / 4;
+    background: #e3e1dc;
+    border: 1px solid var(--ink);
+    position: relative; overflow: hidden;
+  }
+  .r-visual svg.sil { position: absolute; left: 15%; top: 15%; width: 70%; height: 70%; }
+  .r-visual .corner { position: absolute; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); }
+  .r-visual .corner.tl { top: 14px; left: 16px; }
+  .r-visual .corner.tr { top: 14px; right: 16px; }
+  .r-visual .corner.bl { bottom: 14px; left: 16px; color: var(--ink); }
+  .r-visual .corner.br { bottom: 14px; right: 16px; }
+  .r-visual .stamp-over {
+    position: absolute; top: 40%; right: -10px;
+    background: var(--ink); color: var(--paper);
+    padding: 8px 14px; transform: rotate(2deg);
+    font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  }
+
+  /* file body */
+  .r-file {
+    padding: 20px 32px 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .r-section {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--grey-lt);
+    align-items: start;
+  }
+  .r-section .r-label {
+    grid-column: 1 / span 3;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--grey);
+  }
+  .r-section .r-label .num { color: var(--ink); display: block; margin-bottom: 6px; }
+  .r-section .r-content {
+    grid-column: 4 / span 9;
+    font-family: var(--mono); font-size: 13px; line-height: 1.85;
+    color: var(--ink); letter-spacing: .04em;
+  }
+  .r-section .r-content h3 {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: clamp(22px, 2.2vw, 32px);
+    letter-spacing: -0.02em; margin-bottom: 16px; text-transform: uppercase;
+  }
+  .r-section .r-content .kv {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px;
+    margin-top: 14px;
+  }
+  .r-section .r-content .kv > div { display: flex; flex-direction: column; }
+  .r-section .r-content .kv b { font-size: 10px; letter-spacing: .18em; color: var(--grey); font-weight: 500; text-transform: uppercase; margin-bottom: 6px; }
+  .r-section .r-content .kv .v { font-size: 15px; letter-spacing: -0.01em; text-transform: uppercase; color: var(--ink); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 400; }
+  .r-section .r-content p { margin-bottom: 10px; text-transform: uppercase; letter-spacing: .04em; }
+
+  /* journey preview */
+  .journey-prev {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border-top: 1px solid var(--grey-lt);
+    margin-top: 16px;
+  }
+  .journey-prev .leg {
+    padding: 18px 0; border-bottom: 1px solid var(--grey-lt);
+    display: grid; grid-template-columns: 60px 1fr 90px 90px; gap: 16px;
+    align-items: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  }
+  .journey-prev .leg:nth-child(odd) { border-right: 1px solid var(--grey-lt); padding-right: 20px; }
+  .journey-prev .leg:nth-child(even) { padding-left: 20px; }
+  .journey-prev .leg .no { color: var(--grey); }
+  .journey-prev .leg .city { text-transform: uppercase; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; letter-spacing: -0.01em; }
+  .journey-prev .leg .date { color: var(--grey); text-transform: uppercase; }
+  .journey-prev .leg .mode { text-align: right; color: var(--ink); text-transform: uppercase; }
+
+  /* CTA section */
+  .r-cta {
+    padding: 100px 32px 80px;
+    background: var(--ink); color: var(--paper);
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    align-items: end;
+  }
+  .r-cta .cta-copy {
+    grid-column: 1 / span 7;
+  }
+  .r-cta .cta-copy .kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--grey); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .r-cta .cta-copy .kicker .bull { width: 7px; height: 7px; background: var(--paper); border-radius: 50%; display: block; }
+  .r-cta .cta-copy h2 {
+    font-size: clamp(44px, 5.4vw, 90px);
+    font-weight: 400; line-height: 1;
+    letter-spacing: -0.03em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .r-cta .cta-copy h2 em { font-style: normal; color: var(--grey); }
+  .r-cta .cta-copy p {
+    font-family: var(--mono); font-size: 12px; line-height: 1.8; text-transform: uppercase;
+    color: var(--grey-lt); letter-spacing: .06em; max-width: 52ch;
+  }
+  .r-cta .cta-side {
+    grid-column: 9 / span 4;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .r-cta .cta-side .btn-block { background: transparent; border-color: var(--paper); color: var(--paper); }
+  .r-cta .cta-side .btn-block:hover { background: var(--paper); color: var(--ink); }
+  .r-cta .cta-side .alt { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; color: var(--grey); text-transform: uppercase; }
+  .r-cta .cta-side .alt a { color: var(--paper); border-bottom: 1px solid var(--grey); }
+
+  /* custody chain */
+  .custody {
+    padding: 40px 32px 60px;
+  }
+  .custody-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 18px; border-bottom: 1px solid var(--ink);
+    margin-bottom: 0;
+  }
+  .custody-head h4 { font-size: clamp(22px, 2vw, 30px); font-weight: 400; letter-spacing: -0.02em; text-transform: uppercase; }
+  .custody-head .mono { color: var(--grey); }
+  .custody-list {
+    display: grid; grid-template-columns: 80px 1fr 120px 160px 80px; gap: 18px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    padding: 12px 0; color: var(--grey); border-bottom: 1px solid var(--grey-lt);
+  }
+  .custody-row {
+    display: grid; grid-template-columns: 80px 1fr 120px 160px 80px; gap: 18px;
+    padding: 18px 0; border-bottom: 1px solid var(--grey-lt);
+    font-family: var(--mono); align-items: center;
+  }
+  .custody-row .step { font-size: 11px; color: var(--grey); letter-spacing: .1em; }
+  .custody-row .place { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 16px; letter-spacing: -0.01em; text-transform: uppercase; }
+  .custody-row .place span { color: var(--grey); font-family: var(--mono); font-size: 10px; display: block; letter-spacing: .12em; margin-top: 2px; }
+  .custody-row .date { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .custody-row .mode { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .custody-row .status { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); text-align: right; }
+
+  /* integrity footer */
+  .integrity {
+    padding: 30px 32px 40px;
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey);
+    border-top: 1px solid var(--rule);
+  }
+  .integrity > div { grid-column: span 4; }
+  .integrity b { display: block; color: var(--ink); margin-bottom: 6px; font-weight: 500; }
+  .integrity .hash { word-break: break-all; line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .record { padding: 30px 18px; }
+    .r-title { grid-column: 1 / -1; }
+    .r-visual { grid-column: 1 / -1; }
+    .r-file { padding: 20px 18px; }
+    .r-section .r-label, .r-section .r-content { grid-column: 1 / -1; }
+    .r-section .r-content .kv { grid-template-columns: 1fr 1fr; }
+    .r-cta { padding: 60px 18px; }
+    .r-cta .cta-copy, .r-cta .cta-side { grid-column: 1 / -1; }
+    .journey-prev { grid-template-columns: 1fr; }
+    .journey-prev .leg:nth-child(odd) { border-right: 0; padding-right: 0; }
+    .journey-prev .leg:nth-child(even) { padding-left: 0; }
+    .custody-list, .custody-row { grid-template-columns: 60px 1fr 60px; gap: 10px; }
+    .custody-list .c-date, .custody-list .c-mode, .custody-row .date, .custody-row .mode { display: none; }
+    .integrity > div { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav nav-minimal">
+  <div class="nav-c"><img src="assets/logo.png" alt="7C"/> 7C STUDIOS</div>
+  <div></div>
+  <div class="nav-status"><span class="dot"></span> <span>SCAN VERIFIED / 7C-044</span></div>
+</nav>
+
+<div class="meta-strip">
+  <div><b>DOCUMENT</b><span class="val">GARMENT RECORD</span></div>
+  <div><b>REGISTRY</b><span class="val">7C.ARCHIVE / AW26</span></div>
+  <div><b>STATUS</b><span class="val">UNCLAIMED</span></div>
+  <div style="text-align:right;"><b>ACCESSED</b><span class="val" id="now">—</span></div>
+</div>
+
+<section class="record">
+  <div class="r-kicker">
+    <span class="bull"></span>
+    <span>GARMENT RECORD</span>
+    <span class="sep">/</span>
+    <span>N° 7C-044</span>
+    <span class="sep">/</span>
+    <span>READ-ONLY</span>
+    <span class="sep">/</span>
+    <span>INTEGRITY · OK</span>
+  </div>
+
+  <h1 class="r-title reveal">
+    CORRIDOR<br>SHELL.<br><em>OUTER / 01</em>
+    <div class="sub">
+      THIS DOCUMENT EXISTED BEFORE YOU.<br>
+      IT IS THE FILE OF A SINGLE GARMENT / ONE OF 777.
+    </div>
+  </h1>
+
+  <div class="r-visual reveal">
+    <div class="corner tl">N° 7C-044</div>
+    <div class="corner tr">AW26 / 01</div>
+    <div class="corner bl">7C · STUDIOS</div>
+    <div class="corner br">0044 / 0777</div>
+    <svg class="sil" viewBox="0 0 100 130">
+      <g fill="none" stroke="currentColor" stroke-width=".5">
+        <path d="M30 25 L20 50 L22 120 L78 120 L80 50 L70 25 L60 18 L55 22 L50 25 L45 22 L40 18 Z" fill="rgba(0,0,0,.08)"/>
+        <path d="M50 25 L50 120"/>
+        <circle cx="50" cy="45" r=".8" fill="currentColor"/>
+        <circle cx="50" cy="60" r=".8" fill="currentColor"/>
+        <circle cx="50" cy="75" r=".8" fill="currentColor"/>
+        <circle cx="50" cy="90" r=".8" fill="currentColor"/>
+        <path d="M28 55 L34 53 L34 68 L28 66 Z"/>
+        <path d="M72 55 L66 53 L66 68 L72 66 Z"/>
+      </g>
+    </svg>
+    <div class="stamp-over">VERIFIED / 7C</div>
+  </div>
+</section>
+
+<section class="r-file">
+  <div class="r-section reveal">
+    <div class="r-label"><span class="num">§01</span>IDENTITY</div>
+    <div class="r-content">
+      <h3>Corridor Shell — 3-Layer Outer.</h3>
+      <p>A weatherproof mid-length shell engineered for transit corridors, red-eye layovers, and unpredictable arrivals. Minimal seam architecture. Magnetic storm placket. No external branding.</p>
+      <div class="kv">
+        <div><b>SERIAL</b><span class="v">7C-044</span></div>
+        <div><b>EDITION</b><span class="v">0044 / 0777</span></div>
+        <div><b>SEASON</b><span class="v">AW26</span></div>
+        <div><b>COLOUR</b><span class="v">INK / 001</span></div>
+        <div><b>SIZE</b><span class="v">M · EU 48</span></div>
+        <div><b>ISSUED</b><span class="v">17 APR 2026</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r-section reveal">
+    <div class="r-label"><span class="num">§02</span>MATERIALS</div>
+    <div class="r-content">
+      <p>Shell: 100% recycled nylon 6,6 / 40 denier ripstop. Membrane: PFAS-free 3L hydrostatic 20K. Lining: 100% recycled polyester taffeta. Trims: YKK Aquaguard, solid brass eyelets, Bemis seam tape.</p>
+      <div class="kv">
+        <div><b>SHELL</b><span class="v">ECONYL® 40D</span></div>
+        <div><b>MEMBRANE</b><span class="v">3L / 20K / PFAS-FREE</span></div>
+        <div><b>LINING</b><span class="v">RCS POLY TAFFETA</span></div>
+        <div><b>TRIMS</b><span class="v">YKK AQUAGUARD</span></div>
+        <div><b>WEIGHT</b><span class="v">0.72 KG</span></div>
+        <div><b>CARE</b><span class="v">30° / LINE DRY</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r-section reveal">
+    <div class="r-label"><span class="num">§03</span>ORIGIN &amp; PRODUCTION</div>
+    <div class="r-content">
+      <p>Woven in Biella, Italy. Membrane laminated in Como. Cut, sewn, taped and finished in Porto, Portugal by Atelier Costa — a family-run manufactory operating since 1974, working exclusively in small runs.</p>
+      <div class="kv">
+        <div><b>FABRIC MILL</b><span class="v">BIELLA · IT</span></div>
+        <div><b>LAMINATION</b><span class="v">COMO · IT</span></div>
+        <div><b>CUT &amp; SEW</b><span class="v">PORTO · PT</span></div>
+        <div><b>WORKSHOP</b><span class="v">ATELIER COSTA</span></div>
+        <div><b>RUN SIZE</b><span class="v">777 UNITS</span></div>
+        <div><b>LEAD TIME</b><span class="v">148 DAYS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r-section reveal">
+    <div class="r-label"><span class="num">§04</span>TRANSIT LOG</div>
+    <div class="r-content">
+      <h3 style="margin-bottom: 8px;">The garment travelled before you did.</h3>
+      <p style="color: var(--grey); margin-bottom: 18px;">Four legs. 4,118 km. 41 days. Recorded at each custody handoff.</p>
+      <div class="journey-prev">
+        <div class="leg"><span class="no">01</span><span class="city">BIELLA → COMO</span><span class="date">03 FEB 26</span><span class="mode">RAIL</span></div>
+        <div class="leg"><span class="no">02</span><span class="city">COMO → PORTO</span><span class="date">12 FEB 26</span><span class="mode">ROAD · SEA</span></div>
+        <div class="leg"><span class="no">03</span><span class="city">PORTO → BARCELONA</span><span class="date">28 MAR 26</span><span class="mode">ROAD</span></div>
+        <div class="leg"><span class="no">04</span><span class="city">BARCELONA → YOU</span><span class="date">20 APR 26</span><span class="mode">COURIER</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="r-section reveal">
+    <div class="r-label"><span class="num">§05</span>EMISSIONS</div>
+    <div class="r-content">
+      <p>Full lifecycle calculation — cradle to delivered — audited independently. Offset against verified reforestation and peatland programmes via 7C.LEDGER.</p>
+      <div class="kv">
+        <div><b>CO₂E / TOTAL</b><span class="v">14.2 KG</span></div>
+        <div><b>MATERIALS</b><span class="v">8.4 KG</span></div>
+        <div><b>PRODUCTION</b><span class="v">3.1 KG</span></div>
+        <div><b>TRANSPORT</b><span class="v">1.8 KG</span></div>
+        <div><b>PACKAGING</b><span class="v">0.9 KG</span></div>
+        <div><b>OFFSET</b><span class="v">✓ 7C.LEDGER · 2026</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="custody">
+  <div class="custody-head">
+    <h4>CHAIN OF CUSTODY</h4>
+    <span class="mono">§06 / 04 HANDOFFS</span>
+  </div>
+  <div class="custody-list">
+    <div>STEP</div><div>LOCATION</div><div class="c-date">DATE</div><div class="c-mode">MODE</div><div>STATUS</div>
+  </div>
+  <div class="custody-row">
+    <div class="step">§01</div>
+    <div class="place">BIELLA<span>FABRIC MILL · IT</span></div>
+    <div class="date">03.02.26</div>
+    <div class="mode">RAIL</div>
+    <div class="status">✓ SEALED</div>
+  </div>
+  <div class="custody-row">
+    <div class="step">§02</div>
+    <div class="place">COMO<span>LAMINATION · IT</span></div>
+    <div class="date">12.02.26</div>
+    <div class="mode">ROAD · SEA</div>
+    <div class="status">✓ SEALED</div>
+  </div>
+  <div class="custody-row">
+    <div class="step">§03</div>
+    <div class="place">PORTO<span>ATELIER COSTA · PT</span></div>
+    <div class="date">28.03.26</div>
+    <div class="mode">ROAD</div>
+    <div class="status">✓ SEALED</div>
+  </div>
+  <div class="custody-row">
+    <div class="step">§04</div>
+    <div class="place">BARCELONA<span>7C · HQ · ES</span></div>
+    <div class="date">20.04.26</div>
+    <div class="mode">COURIER</div>
+    <div class="status">● AWAITING YOU</div>
+  </div>
+</section>
+
+<section class="r-cta">
+  <div class="cta-copy reveal">
+    <div class="kicker"><span class="bull"></span> §07 / ACT</div>
+    <h2>CONTINUE THE <em>JOURNEY.</em></h2>
+    <p>This file is complete. The garment has finished its first passage. Everything that follows is yours to record — places it goes, seasons it survives, cities it sleeps in. Claim it into your archive.</p>
+  </div>
+  <div class="cta-side">
+    <a href="claim.html" class="btn-block"><span>CLAIM THIS GARMENT</span><span class="arr">→</span></a>
+    <div class="alt">ALREADY HAVE AN ACCOUNT? <a href="claim.html?mode=signin">SIGN IN &amp; ADD</a></div>
+  </div>
+</section>
+
+<section class="integrity">
+  <div>
+    <b>FILE INTEGRITY</b>
+    <span class="hash">SHA-256 · 9F3A·2D71·44B8·E90C·7A15·CC66·BB02·10D8</span>
+  </div>
+  <div style="text-align:center;">
+    <b>ISSUED BY</b>
+    7C STUDIOS / ARCHIVE &amp; LEDGER
+  </div>
+  <div style="text-align:right;">
+    <b>TIMESTAMP</b>
+    <span id="t-stamp">—</span>
+  </div>
+</section>
+
+<div class="foot-mini">
+  <div class="c1">© 7C STUDIOS MMXXVI</div>
+  <div class="c2">EVERYWHERE — NOWHERE</div>
+  <div class="c3" id="foot-time">—</div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+  const f = (d) => new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Europe/Madrid'}).format(d).toUpperCase();
+  const tick = () => {
+    const d = new Date();
+    document.getElementById('now').textContent = f(d) + ' CET';
+    document.getElementById('t-stamp').textContent = d.toISOString().replace('T', ' / ').slice(0, 22) + ' UTC';
+    document.getElementById('foot-time').textContent = 'LOCAL ' + new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Europe/Madrid'}).format(d) + ' CET';
+  };
+  tick(); setInterval(tick, 1000);
+
+  // Stash the garment we're viewing for the claim flow
+  sessionStorage.setItem('7c_pending_garment', JSON.stringify({
+    no: '7C-044',
+    name: 'CORRIDOR SHELL',
+    cat: 'OUTER / 01',
+    edition: '0044 / 0777',
+    season: 'AW26',
+    color: 'INK / 001',
+    size: 'M · EU 48',
+    issued: '17 APR 2026',
+    silhouette: 'jacket',
+    journey: [
+      { city: 'BIELLA', country: 'IT', role: 'FABRIC MILL', date: '03.02.26', mode: 'RAIL', lat: 45.566, lng: 8.054 },
+      { city: 'COMO', country: 'IT', role: 'LAMINATION', date: '12.02.26', mode: 'ROAD · SEA', lat: 45.810, lng: 9.085 },
+      { city: 'PORTO', country: 'PT', role: 'ATELIER COSTA', date: '28.03.26', mode: 'ROAD', lat: 41.157, lng: -8.629 },
+      { city: 'BARCELONA', country: 'ES', role: '7C · HQ', date: '20.04.26', mode: 'COURIER', lat: 41.385, lng: 2.173 },
+    ],
+  }));
+</script>
+</body>
+</html>
