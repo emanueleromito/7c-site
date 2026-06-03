@@ -413,7 +413,7 @@
   <div class="c3" id="foot-time">—</div>
 </div>
 
-<script src="shared.js"></script>
+<script type="module" src="shared.js"></script>
 <script>
   const f = (d) => new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Europe/Madrid'}).format(d).toUpperCase();
   const tick = () => {
