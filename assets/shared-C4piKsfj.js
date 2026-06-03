@@ -1,4 +1,4 @@
-(function(){const n=document.createElement("link").relList;if(n&&n.supports&&n.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function d(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=d(e);fetch(e.href,t)}})();(function(){const a=window.location.hostname.includes("github.io")?"/7c-site":"";class n extends HTMLElement{connectedCallback(){let t=!1;try{t=!!localStorage.getItem("7c_user")}catch{}const o=t?`<a href="${a}/archive.html">ACCOUNT</a>`:`<a href="${a}/claim.html">CHECK-IN</a>`;this.innerHTML=`
+(function(){const n=document.createElement("link").relList;if(n&&n.supports&&n.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function d(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=d(e);fetch(e.href,t)}})();const g="/7c-site/assets/logo-new-Dx7AcjjY.png";(function(){const a=window.location.hostname.includes("github.io")?"/7c-site":"";class n extends HTMLElement{connectedCallback(){let t=!1;try{t=!!localStorage.getItem("7c_user")}catch{}const o=t?`<a href="${a}/archive.html">ACCOUNT</a>`:`<a href="${a}/claim.html">CHECK-IN</a>`;this.innerHTML=`
         <style>
           .nav {
             display: grid;
@@ -34,7 +34,7 @@
           <div class="nav-l"><a href="${a}/#shop">SHOP</a></div>
           <div class="nav-l"><a href="${a}/#brand">BRAND</a></div>
           <div class="nav-l"><a href="${a}/#arrivals">ARRIVALS</a></div>
-          <div class="logo"><a href="${a}/"><img src="${a}/assets/logo-new.png" alt="7C"/></a></div>
+          <div class="logo"><a href="${a}/"><img src="${g}" alt="7C"/></a></div>
           <div class="nav-r"><a href="${a}/#search">SEARCH</a></div>
           <div class="nav-r">${o}</div>
           <div class="nav-r"><a href="${a}/#cart" class="cart">CART <span class="count">00</span></a></div>
@@ -87,7 +87,7 @@
         </style>
         <footer class="site-footer">
           <div class="foot-wordmark">
-            <img src="${a}/assets/logo-new.png" alt="7C" />
+            <img src="${g}" alt="7C" />
           </div>
           <div class="foot-cols">
             <div>
