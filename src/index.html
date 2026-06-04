@@ -1307,20 +1307,7 @@
       text-transform: uppercase;
     }
 
-    .board-row .stat .d {
-      width: 7px;
-      height: 7px;
-      background: var(--ink);
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse 1.6s ease-in-out infinite;
-    }
-
-    .board-row .stat.boarded .d {
-      animation: none;
-      opacity: .35;
-    }
-
+    /* Removed .board-row .stat .d */
     /* ───── MANIFESTO BAND ───── */
     .manifesto {
       padding: 120px 48px;
@@ -1969,7 +1956,7 @@
       <div class="route">${f.route}</div>
       <div class="gate">G ${f.gate}</div>
       <div class="price">${f.price}</div>
-      <div class="stat ${cls}"><span class="d"></span> ${f.stat}</div>
+      <div class="stat ${cls}">${f.stat}</div>
     </a>`;
     }).join('');
     document.getElementById('board-rows').innerHTML = rows;

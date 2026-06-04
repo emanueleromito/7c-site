@@ -41,13 +41,26 @@ import _logoSrc from './assets/logo-new.png';
             font-family: "Helvetica Neue", sans-serif; font-weight: 400; font-size: 10px;
             background: #0a0a0a; color: #fff; padding: 1px 6px; letter-spacing: .04em;
           }
+          .nav .mobile-toggle { display: none; background: none; border: none; font-size: 10px; font-family: "Helvetica Neue", sans-serif; cursor: pointer; letter-spacing: .2em; text-transform: uppercase; padding: 10px; color: inherit; }
+          .mobile-menu { display: none; position: fixed; top: 0; left: 0; width: 80%; max-width: 320px; height: 100vh; background: #fff; z-index: 1000; flex-direction: column; padding: 40px; border-right: 1px solid #1a1a1a; transform: translateX(-100%); transition: transform 0.3s ease; }
+          .mobile-menu.open { transform: translateX(0); }
+          .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+          .mobile-overlay.open { opacity: 1; pointer-events: auto; }
+          .mobile-menu a { display: block; padding: 18px 0; font-family: "Helvetica Neue", sans-serif; font-weight: 300; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #1a1a1a; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.1); }
+          .mobile-menu a:last-child { border-bottom: none; }
+          .mobile-menu a .count { font-family: "Helvetica Neue", sans-serif; font-weight: 400; font-size: 10px; background: #0a0a0a; color: #fff; padding: 1px 6px; letter-spacing: .04em; margin-left: 6px; }
+          .mobile-menu .close-btn { align-self: flex-start; margin-bottom: 40px; font-size: 10px; background: none; border: none; cursor: pointer; letter-spacing: .2em; text-transform: uppercase; padding: 10px 0; color: #1a1a1a; }
           @media (max-width: 980px) {
             .nav { display: flex; align-items: center; justify-content: center; padding: 18px 20px; }
             .nav .nav-l, .nav .nav-r { display: none; }
             .nav .logo { padding: 0; }
+            .nav .mobile-toggle { display: block; position: absolute; left: 10px; }
+            .mobile-menu { display: flex; }
+            .mobile-overlay { display: block; }
           }
         </style>
         <nav class="nav">
+          <button class="mobile-toggle">MENU</button>
           <div class="nav-l"><a href="${_BASE}/#shop">SHOP</a></div>
           <div class="nav-l"><a href="${_BASE}/#brand">BRAND</a></div>
           <div class="nav-l"><a href="${_BASE}/#arrivals">ARRIVALS</a></div>
@@ -56,7 +69,43 @@ import _logoSrc from './assets/logo-new.png';
           <div class="nav-r">${checkInLink}</div>
           <div class="nav-r"><a href="${_BASE}/#cart" class="cart">CART <span class="count">00</span></a></div>
         </nav>
+        <div class="mobile-overlay"></div>
+        <div class="mobile-menu">
+          <button class="close-btn">CLOSE</button>
+          <a href="${_BASE}/#shop">SHOP</a>
+          <a href="${_BASE}/#brand">BRAND</a>
+          <a href="${_BASE}/#arrivals">ARRIVALS</a>
+          <a href="${_BASE}/#search">SEARCH</a>
+          ${checkInLink}
+          <a href="${_BASE}/#cart">CART <span class="count">00</span></a>
+        </div>
       `;
+
+      const mToggle = this.querySelector('.mobile-toggle');
+      const mMenu = this.querySelector('.mobile-menu');
+      const mOverlay = this.querySelector('.mobile-overlay');
+      const mClose = this.querySelector('.close-btn');
+
+      if (mToggle && mMenu && mOverlay && mClose) {
+        mToggle.addEventListener('click', () => {
+          mMenu.classList.add('open');
+          mOverlay.classList.add('open');
+        });
+        mClose.addEventListener('click', () => {
+          mMenu.classList.remove('open');
+          mOverlay.classList.remove('open');
+        });
+        mOverlay.addEventListener('click', () => {
+          mMenu.classList.remove('open');
+          mOverlay.classList.remove('open');
+        });
+        mMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            mMenu.classList.remove('open');
+            mOverlay.classList.remove('open');
+          });
+        });
+      }
     }
   }
   customElements.define('site-header', SiteHeader);
