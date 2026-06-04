@@ -1,8 +1,8 @@
 import _logoSrc from './assets/logo-new.png';
 /* ─────────── 7C SHARED JS ─────────── */
 (function() {
-  // Base path for GitHub Pages subpath deployment
-  const _BASE = window.location.hostname.includes('github.io') ? '/7c-site' : '';
+  // Base path — root since we use a custom domain
+  const _BASE = '';
   // Site Header Web Component
   class SiteHeader extends HTMLElement {
     connectedCallback() {
@@ -42,8 +42,9 @@ import _logoSrc from './assets/logo-new.png';
             background: #0a0a0a; color: #fff; padding: 1px 6px; letter-spacing: .04em;
           }
           @media (max-width: 980px) {
-            .nav { grid-template-columns: 1fr auto 1fr; padding: 18px 20px; }
+            .nav { display: flex; align-items: center; justify-content: center; padding: 18px 20px; }
             .nav .nav-l, .nav .nav-r { display: none; }
+            .nav .logo { padding: 0; }
           }
         </style>
         <nav class="nav">
