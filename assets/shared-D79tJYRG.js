@@ -26,8 +26,9 @@
             background: #0a0a0a; color: #fff; padding: 1px 6px; letter-spacing: .04em;
           }
           @media (max-width: 980px) {
-            .nav { grid-template-columns: 1fr auto 1fr; padding: 18px 20px; }
+            .nav { display: flex; align-items: center; justify-content: center; padding: 18px 20px; }
             .nav .nav-l, .nav .nav-r { display: none; }
+            .nav .logo { padding: 0; }
           }
         </style>
         <nav class="nav">
