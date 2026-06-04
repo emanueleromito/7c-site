@@ -111,8 +111,7 @@ body::before {
 
 @media (max-width: 900px) {
 
-  .nav { display: flex; align-items: center; justify-content: center; padding: 14px 18px; }
-  .nav .nav-l, .nav .nav-r { display: none; }
+  /* nav is handled by its own component style in shared.js */
   .meta-strip { padding: 14px 18px; grid-template-columns: 1fr 1fr; }
   .meta-strip > div { grid-column: span 1; }
   .foot-mini { grid-template-columns: 1fr; padding: 18px; }
