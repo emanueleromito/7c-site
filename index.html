@@ -1707,20 +1707,25 @@
       .hero-overlay { padding: 24px 20px; }
       .meta-strip { padding: 18px 20px; grid-template-columns: 1fr 1fr; }
       .board, .manifesto, .passport { padding-left: 20px; padding-right: 20px; }
-      .board-cols, .board-row { grid-template-columns: 50px 1.5fr 60px 60px; gap: 12px; }
+      /* show price, hide route/gate; keep flt narrow, name flex, price, status */
+      .board-cols, .board-row { grid-template-columns: 44px 1fr 64px 90px; gap: 10px; }
       .board-cols .c-route, .board-cols .c-gate,
       .board-row .route, .board-row .gate { display: none; }
       .manifesto-grid { grid-template-columns: 1fr; gap: 32px; }
       .passport { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+      .subscribe { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
     }
     @media (max-width: 600px) {
-      .meta-strip { grid-template-columns: 1fr; gap: 12px; }
-      .meta-strip .r { text-align: left; }
+      .meta-strip { grid-template-columns: 1fr 1fr; gap: 16px; padding: 14px 18px; }
       .hero-frame { aspect-ratio: 4 / 3; }
-      .board-cols, .board-row { grid-template-columns: 40px 1fr 60px 50px; gap: 8px; }
-      .board-row .name { font-size: 14px; }
+      /* on very small screens: just flt + name + price, drop status column */
+      .board-cols, .board-row { grid-template-columns: 36px 1fr 60px; gap: 8px; }
+      .board-cols .c-route, .board-cols .c-gate, .board-cols .c-price,
+      .board-row .route, .board-row .gate, .board-row .stat { display: none; }
+      .board-row .name { font-size: 13px; }
       .board-row .name span { font-size: 9px; }
-      .board-row .price { font-size: 12px; }
+      .board-row .price { font-size: 13px; text-align: right; }
+      .subscribe { padding: 40px 18px; }
     }
   </style>
   <script type="module" crossorigin src="/assets/shared-DzKlfLOC.js"></script>
