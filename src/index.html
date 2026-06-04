@@ -1712,6 +1712,13 @@
       .manifesto-grid { grid-template-columns: 1fr; gap: 32px; }
       .passport { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
     }
+    @media (max-width: 600px) {
+      .meta-strip { grid-template-columns: 1fr; gap: 12px; }
+      .meta-strip .r { text-align: left; }
+      .hero-frame { aspect-ratio: 4 / 3; }
+      .board-row .name { font-size: 14px; }
+      .board-row .name span { font-size: 9px; }
+    }
   </style>
 </head>
 
@@ -1944,11 +1951,13 @@
 
     /* ─── ARRIVALS BOARD ROWS ─── */
     const fleet = [
-      { flt: 'SJ01', name: 'SEAT JACKET', cat: 'NAPPA LEATHER + COTTON · ICE BLUE', route: 'NLCTN · IB', gate: '01', price: '€2.079', stat: 'BOARDING', sil: 'jacket' },
+      { flt: 'SJ01', name: 'HEADREST JACKET', cat: 'NAPPA LEATHER + COTTON · ICE BLUE', route: 'NLCTN · IB', gate: '01', price: '€2.079', stat: 'BOARDING', sil: 'jacket' },
       { flt: 'AJ02', name: 'AVIATOR JACKET', cat: 'NAPPA LEATHER · SKY BLUE', route: 'NL · SB', gate: '02', price: '€1.782', stat: 'BOARDING', sil: 'jacket' },
       { flt: 'CSO1', name: 'COAT SHELL', cat: 'GABARDINE · JET BLACK', route: 'GA · JB', gate: '03', price: '€1.485', stat: 'BOARDING', sil: 'coat' },
       { flt: 'PKS01', name: 'PADDED KNIT SWEATER', cat: 'COTTON · LIGHT BLUE', route: 'CTN · LB', gate: '04', price: '€1.366', stat: 'FINAL CALL', sil: 'knit' },
       { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK', route: 'NL · JB', gate: '05', price: '€1.247', stat: 'FINAL CALL', sil: 'jacket' },
+      { flt: 'AHC01', name: 'ARTIFICIAL HORIZON CAP', cat: 'NAPPA LEATHER · SKY BLUE', route: 'NL · SB', gate: '06', price: '€594', stat: 'BOARDING', sil: 'cap' },
+      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST', cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB', gate: '07', price: '€680', stat: 'BOARDING', sil: 'jacket' },
     ];
     const rows = fleet.map((f, i) => {
       const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';

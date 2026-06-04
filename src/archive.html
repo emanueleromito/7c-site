@@ -83,6 +83,11 @@
     .records .col-head { grid-template-columns: 40px 1fr 60px; }
     .record-row { grid-template-columns: 40px 1fr 60px; }
   }
+  @media (max-width: 600px) {
+    .bp-row { grid-template-columns: 1fr; gap: 16px; }
+    .record-row .g-meta .name { font-size: 14px; }
+    .record-row .g-meta .cat { font-size: 9px; }
+  }
 </style>
 </head>
 <body>
