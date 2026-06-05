@@ -12,6 +12,7 @@ window._7C_IMGS = {
   collar:   _imgCollar,
   hood:     _imgHood,
 };
+window.dispatchEvent(new CustomEvent('7c:ready'));
 /* ───────── 7C SHARED JS ───────── */
 (function() {
   // Base path — root since we use a custom domain
