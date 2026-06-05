@@ -1223,6 +1223,11 @@
       align-items: center;
     }
 
+    /* Desktop: make wrapper divs transparent to the grid */
+    .board-row .row-sil { display: none; }
+    .board-row .row-info { display: contents; }
+    .board-row .row-price-stat { display: contents; }
+
     .board-cols {
       font-family: "Helvetica Neue", "Inter", sans-serif;
       font-weight: 400;
@@ -1698,20 +1703,84 @@
       .passport { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
       .subscribe { display: block; padding: 60px 20px; }
       .subscribe .sub-copy { margin-bottom: 40px; }
-      /* Arrivals: switch rows to flex so hidden items don't leave ghost cells */
+
+      /* Arrivals: full-width product cards on mobile */
+      .board-layout { grid-template-columns: 1fr; gap: 0; }
+      .board-viewer { display: none; }
       .board-cols { display: none; }
+
       .board-row {
         display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 0;
+        padding: 0;
+        border-bottom: 1px solid var(--grey-lt);
+        background: #fff;
+        transition: background .2s;
+        min-height: 130px;
+      }
+      .board-row:active { background: #f5f3ee; }
+      .board-row:hover { padding-left: 0; background: #f5f3ee; }
+
+      /* Silhouette thumbnail — left panel of card */
+      .board-row .row-sil {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        flex-shrink: 0;
+        background: #f7f6f3;
+        border-right: 1px solid var(--grey-lt);
+        padding: 16px 12px;
+      }
+      .board-row .row-sil svg {
+        width: 52px;
+        height: 72px;
+        color: #1a1a1a;
+      }
+
+      /* Info panel — right side of card */
+      .board-row .row-info {
+        display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding: 18px 0;
+        justify-content: center;
+        gap: 5px;
+        padding: 18px 16px;
+        flex: 1;
+        min-width: 0;
+      }
+      .board-row .flt { font-size: 9px; letter-spacing: .22em; color: var(--grey); }
+      .board-row .name {
+        font-size: clamp(14px, 3.8vw, 19px);
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .board-row .name span {
+        display: block;
+        font-size: 9px;
+        color: var(--grey);
+        margin-top: 3px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
       }
       .board-row .route, .board-row .gate { display: none; }
-      .board-row .flt { font-size: 10px; }
-      .board-row .name { font-size: clamp(15px, 3.5vw, 20px); }
-      .board-row .name span { margin-top: 2px; }
-      .board-row .price { font-size: 15px; }
-      .board-row .stat { justify-content: flex-start; margin-top: 2px; }
+      .board-row .row-price-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 4px;
+      }
+      .board-row .price { font-size: 14px; }
+      .board-row .stat {
+        font-size: 9px;
+        letter-spacing: .18em;
+        color: var(--grey);
+        justify-content: flex-start;
+      }
     }
   </style>
 </head>
@@ -1950,14 +2019,20 @@
     ];
     const rows = fleet.map((f, i) => {
       const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';
+      const silSvg = sils[f.sil] || sils.jacket;
       return `<a class="board-row" href="#" data-i="${i}">
-      <div class="flt">${f.flt}</div>
-      <div class="name">${f.name}<span>${f.cat}</span></div>
-      <div class="route">${f.route}</div>
-      <div class="gate">G ${f.gate}</div>
-      <div class="price">${f.price}</div>
-      <div class="stat ${cls}">${f.stat}</div>
-    </a>`;
+        <div class="row-sil">${silSvg}</div>
+        <div class="row-info">
+          <div class="flt">${f.flt}</div>
+          <div class="name">${f.name}<span>${f.cat}</span></div>
+          <div class="row-price-stat">
+            <div class="price">${f.price}</div>
+            <div class="stat ${cls}">${f.stat}</div>
+          </div>
+        </div>
+        <div class="route" style="display:none">${f.route}</div>
+        <div class="gate" style="display:none">G ${f.gate}</div>
+      </a>`;
     }).join('');
     document.getElementById('board-rows').innerHTML = rows;
 
