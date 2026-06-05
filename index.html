@@ -1794,7 +1794,7 @@
       }
     }
   </style>
-  <script type="module" crossorigin src="/assets/shared-DXXhQe6d.js"></script>
+  <script type="module" crossorigin src="/assets/shared-CeBdl5CX.js"></script>
 </head>
 
 <body>
@@ -1869,7 +1869,7 @@
         <div class="bv-frame" id="bv-frame">
           <span class="bv-tag">PREVIEW</span>
           <span class="bv-tag-r" id="bv-flt">L7-01</span>
-          <img class="bv-photo" id="bv-img" src="/assets/aviatorjacket-GY_GLd2Q.jpeg" alt="" />
+          <img class="bv-photo" id="bv-img" alt="" />
           <svg class="silhouette" id="bv-svg" viewBox="0 0 100 130" fill="none" stroke="currentColor"
             stroke-width=".7" style="display:none"></svg>
         </div>
@@ -2021,12 +2021,13 @@
     };
 
     /* ─── ARRIVALS BOARD ROWS ─── */
+    const _I = window._7C_IMGS || {};
     const fleet = [
-      { flt: 'AJ02',  name: 'AVIATOR JACKET',        cat: 'NAPPA LEATHER · SKY BLUE',     route: 'NL · SB', gate: '01', price: '€1.782', stat: 'BOARDING',   img: 'assets/aviatorjacket.jpeg' },
-      { flt: 'CSO1',  name: 'COAT SHELL',             cat: 'GABARDINE · JET BLACK',        route: 'GA · JB', gate: '02', price: '€1.485', stat: 'BOARDING',   img: 'assets/shellcoat.jpeg' },
-      { flt: 'PKS01', name: 'PADDED KNIT SWEATER',   cat: 'COTTON · LIGHT BLUE',          route: 'CTN · LB', gate: '03', price: '€1.366', stat: 'FINAL CALL', img: 'assets/sweather.jpeg' },
-      { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK',   route: 'NL · JB', gate: '04', price: '€1.247', stat: 'FINAL CALL', img: 'assets/inflatablecollar.jpeg' },
-      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST', cat: 'NAPPA LEATHER · NIGHT BLACK',  route: 'NL · NB', gate: '05', price: '€680',   stat: 'BOARDING',   img: 'assets/hood2dot0.jpeg' },
+      { flt: 'AJ02',  name: 'AVIATOR JACKET',         cat: 'NAPPA LEATHER · SKY BLUE',    route: 'NL · SB',  gate: '01', price: '€1.782', stat: 'BOARDING',   img: _I.aviator },
+      { flt: 'CSO1',  name: 'COAT SHELL',              cat: 'GABARDINE · JET BLACK',       route: 'GA · JB',  gate: '02', price: '€1.485', stat: 'BOARDING',   img: _I.shell },
+      { flt: 'PKS01', name: 'PADDED KNIT SWEATER',    cat: 'COTTON · LIGHT BLUE',         route: 'CTN · LB', gate: '03', price: '€1.366', stat: 'FINAL CALL', img: _I.sweater },
+      { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK',  route: 'NL · JB',  gate: '04', price: '€1.247', stat: 'FINAL CALL', img: _I.collar },
+      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST',  cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB',  gate: '05', price: '€680',   stat: 'BOARDING',   img: _I.hood },
     ];
     const rows = fleet.map((f, i) => {
       const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';
