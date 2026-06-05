@@ -1794,7 +1794,7 @@
       }
     }
   </style>
-  <script type="module" crossorigin src="/assets/shared-CeBdl5CX.js"></script>
+  <script type="module" crossorigin src="/assets/shared-oeB_JiLB.js"></script>
 </head>
 
 <body>
@@ -2020,63 +2020,64 @@
       scarf: `<svg viewBox="0 0 100 130" fill="none" stroke="currentColor" stroke-width=".7"><path d="M40 16 L60 16 L66 100 L70 120 L60 122 L54 110 L50 80 L46 110 L40 122 L30 120 L34 100 Z"/></svg>`,
     };
 
-    /* ─── ARRIVALS BOARD ROWS ─── */
-    const _I = window._7C_IMGS || {};
-    const fleet = [
-      { flt: 'AJ02',  name: 'AVIATOR JACKET',         cat: 'NAPPA LEATHER · SKY BLUE',    route: 'NL · SB',  gate: '01', price: '€1.782', stat: 'BOARDING',   img: _I.aviator },
-      { flt: 'CSO1',  name: 'COAT SHELL',              cat: 'GABARDINE · JET BLACK',       route: 'GA · JB',  gate: '02', price: '€1.485', stat: 'BOARDING',   img: _I.shell },
-      { flt: 'PKS01', name: 'PADDED KNIT SWEATER',    cat: 'COTTON · LIGHT BLUE',         route: 'CTN · LB', gate: '03', price: '€1.366', stat: 'FINAL CALL', img: _I.sweater },
-      { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK',  route: 'NL · JB',  gate: '04', price: '€1.247', stat: 'FINAL CALL', img: _I.collar },
-      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST',  cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB',  gate: '05', price: '€680',   stat: 'BOARDING',   img: _I.hood },
-    ];
-    const rows = fleet.map((f, i) => {
-      const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';
-      return `<a class="board-row" href="#" data-i="${i}">
-        <div class="row-sil"><img src="${f.img}" alt="${f.name}" loading="lazy"></div>
-        <div class="row-info">
-          <div class="flt">${f.flt}</div>
-          <div class="name">${f.name}<span>${f.cat}</span></div>
-          <div class="row-price-stat">
-            <div class="price">${f.price}</div>
-            <div class="stat ${cls}">${f.stat}</div>
+    /* ─── ARRIVALS BOARD — init after shared.js exposes _7C_IMGS ─── */
+    window.addEventListener('7c:ready', function() {
+      const _I = window._7C_IMGS || {};
+      const fleet = [
+        { flt: 'AJ02',  name: 'AVIATOR JACKET',         cat: 'NAPPA LEATHER · SKY BLUE',    route: 'NL · SB',  gate: '01', price: '€1.782', stat: 'BOARDING',   img: _I.aviator },
+        { flt: 'CSO1',  name: 'COAT SHELL',              cat: 'GABARDINE · JET BLACK',       route: 'GA · JB',  gate: '02', price: '€1.485', stat: 'BOARDING',   img: _I.shell },
+        { flt: 'PKS01', name: 'PADDED KNIT SWEATER',    cat: 'COTTON · LIGHT BLUE',         route: 'CTN · LB', gate: '03', price: '€1.366', stat: 'FINAL CALL', img: _I.sweater },
+        { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK',  route: 'NL · JB',  gate: '04', price: '€1.247', stat: 'FINAL CALL', img: _I.collar },
+        { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST',  cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB',  gate: '05', price: '€680',   stat: 'BOARDING',   img: _I.hood },
+      ];
+      const rows = fleet.map((f, i) => {
+        const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';
+        return `<a class="board-row" href="#" data-i="${i}">
+          <div class="row-sil"><img src="${f.img}" alt="${f.name}" loading="lazy"></div>
+          <div class="row-info">
+            <div class="flt">${f.flt}</div>
+            <div class="name">${f.name}<span>${f.cat}</span></div>
+            <div class="row-price-stat">
+              <div class="price">${f.price}</div>
+              <div class="stat ${cls}">${f.stat}</div>
+            </div>
           </div>
-        </div>
-        <div class="route" style="display:none">${f.route}</div>
-        <div class="gate" style="display:none">G ${f.gate}</div>
-      </a>`;
-    }).join('');
-    document.getElementById('board-rows').innerHTML = rows;
+          <div class="route" style="display:none">${f.route}</div>
+          <div class="gate" style="display:none">G ${f.gate}</div>
+        </a>`;
+      }).join('');
+      document.getElementById('board-rows').innerHTML = rows;
 
-    /* ─── ARRIVALS VIEWER WIRING ─── */
-    const bvFrame = document.getElementById('bv-frame');
-    const bvImg  = document.getElementById('bv-img');
-    const bvSvg  = document.getElementById('bv-svg');
-    const bvName = document.getElementById('bv-name');
-    const bvCat  = document.getElementById('bv-cat');
-    const bvPrice = document.getElementById('bv-price');
-    const bvStat = document.getElementById('bv-stat');
-    const bvFlt  = document.getElementById('bv-flt');
-    function setView(i) {
-      const f = fleet[i]; if (!f) return;
-      bvFrame.classList.add('swap');
-      setTimeout(() => {
-        if (bvImg) { bvImg.src = f.img; bvImg.alt = f.name; }
-        if (bvName) bvName.textContent = f.name;
-        if (bvCat)  bvCat.textContent  = f.cat;
-        if (bvPrice) bvPrice.textContent = f.price;
-        if (bvStat) bvStat.textContent = f.stat;
-        if (bvFlt)  bvFlt.textContent  = f.flt;
-        bvFrame.classList.remove('swap');
-      }, 180);
-      document.querySelectorAll('.board-row').forEach(r => r.classList.toggle('active', +r.dataset.i === i));
-    }
-    setView(0);
-    document.querySelectorAll('.board-row').forEach(r => {
-      const i = +r.dataset.i;
-      r.addEventListener('mouseenter', () => setView(i));
-      r.addEventListener('focus', () => setView(i));
-      r.addEventListener('click', e => e.preventDefault());
-    });
+      /* viewer */
+      const bvFrame = document.getElementById('bv-frame');
+      const bvImg   = document.getElementById('bv-img');
+      const bvName  = document.getElementById('bv-name');
+      const bvCat   = document.getElementById('bv-cat');
+      const bvPrice = document.getElementById('bv-price');
+      const bvStat  = document.getElementById('bv-stat');
+      const bvFlt   = document.getElementById('bv-flt');
+      function setView(i) {
+        const f = fleet[i]; if (!f) return;
+        bvFrame.classList.add('swap');
+        setTimeout(() => {
+          if (bvImg) { bvImg.src = f.img; bvImg.alt = f.name; }
+          if (bvName)  bvName.textContent  = f.name;
+          if (bvCat)   bvCat.textContent   = f.cat;
+          if (bvPrice) bvPrice.textContent = f.price;
+          if (bvStat)  bvStat.textContent  = f.stat;
+          if (bvFlt)   bvFlt.textContent   = f.flt;
+          bvFrame.classList.remove('swap');
+        }, 180);
+        document.querySelectorAll('.board-row').forEach(r => r.classList.toggle('active', +r.dataset.i === i));
+      }
+      setView(0);
+      document.querySelectorAll('.board-row').forEach(r => {
+        const i = +r.dataset.i;
+        r.addEventListener('mouseenter', () => setView(i));
+        r.addEventListener('focus',      () => setView(i));
+        r.addEventListener('click', e => e.preventDefault());
+      });
+    }, { once: true });
 
     /* ─── BOARDING PASS FORM ─── */
     const nl = document.getElementById('newsletter');
