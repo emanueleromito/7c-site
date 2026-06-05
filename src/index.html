@@ -1035,11 +1035,23 @@
     .bv-frame {
       flex: 1;
       position: relative;
-      background: #ffffff;
+      background: #f7f6f3;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .bv-frame .bv-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity .35s ease;
+    }
+
+    .bv-frame.swap .bv-photo {
+      opacity: 0;
     }
 
     .bv-frame svg.silhouette {
@@ -1723,21 +1735,20 @@
       .board-row:active { background: #f5f3ee; }
       .board-row:hover { padding-left: 0; background: #f5f3ee; }
 
-      /* Silhouette thumbnail — left panel of card */
+      /* Photo thumbnail — left panel of card */
       .board-row .row-sil {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100px;
+        width: 110px;
         flex-shrink: 0;
-        background: #f7f6f3;
+        background: #f0eeea;
         border-right: 1px solid var(--grey-lt);
-        padding: 16px 12px;
+        overflow: hidden;
+        padding: 0;
       }
-      .board-row .row-sil svg {
-        width: 52px;
-        height: 72px;
-        color: #1a1a1a;
+      .board-row .row-sil img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
       }
 
       /* Info panel — right side of card */
@@ -1855,10 +1866,11 @@
       </div>
       <aside class="board-viewer reveal" id="board-viewer">
         <div class="bv-frame" id="bv-frame">
-          <span class="bv-tag">PREVIEW / SILHOUETTE</span>
+          <span class="bv-tag">PREVIEW</span>
           <span class="bv-tag-r" id="bv-flt">L7-01</span>
+          <img class="bv-photo" id="bv-img" alt="" />
           <svg class="silhouette" id="bv-svg" viewBox="0 0 100 130" fill="none" stroke="currentColor"
-            stroke-width=".7"></svg>
+            stroke-width=".7" style="display:none"></svg>
         </div>
         <div class="bv-meta">
           <div>
@@ -2008,20 +2020,18 @@
     };
 
     /* ─── ARRIVALS BOARD ROWS ─── */
+    const _I = window._7C_IMGS || {};
     const fleet = [
-      { flt: 'SJ01', name: 'HEADREST JACKET', cat: 'NAPPA LEATHER + COTTON · ICE BLUE', route: 'NLCTN · IB', gate: '01', price: '€2.079', stat: 'BOARDING', sil: 'jacket' },
-      { flt: 'AJ02', name: 'AVIATOR JACKET', cat: 'NAPPA LEATHER · SKY BLUE', route: 'NL · SB', gate: '02', price: '€1.782', stat: 'BOARDING', sil: 'jacket' },
-      { flt: 'CSO1', name: 'COAT SHELL', cat: 'GABARDINE · JET BLACK', route: 'GA · JB', gate: '03', price: '€1.485', stat: 'BOARDING', sil: 'coat' },
-      { flt: 'PKS01', name: 'PADDED KNIT SWEATER', cat: 'COTTON · LIGHT BLUE', route: 'CTN · LB', gate: '04', price: '€1.366', stat: 'FINAL CALL', sil: 'knit' },
-      { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK', route: 'NL · JB', gate: '05', price: '€1.247', stat: 'FINAL CALL', sil: 'jacket' },
-      { flt: 'AHC01', name: 'ARTIFICIAL HORIZON CAP', cat: 'NAPPA LEATHER · SKY BLUE', route: 'NL · SB', gate: '06', price: '€594', stat: 'BOARDING', sil: 'cap' },
-      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST', cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB', gate: '07', price: '€680', stat: 'BOARDING', sil: 'jacket' },
+      { flt: 'AJ02',  name: 'AVIATOR JACKET',         cat: 'NAPPA LEATHER · SKY BLUE',    route: 'NL · SB',  gate: '01', price: '€1.782', stat: 'BOARDING',   img: _I.aviator },
+      { flt: 'CSO1',  name: 'COAT SHELL',              cat: 'GABARDINE · JET BLACK',       route: 'GA · JB',  gate: '02', price: '€1.485', stat: 'BOARDING',   img: _I.shell },
+      { flt: 'PKS01', name: 'PADDED KNIT SWEATER',    cat: 'COTTON · LIGHT BLUE',         route: 'CTN · LB', gate: '03', price: '€1.366', stat: 'FINAL CALL', img: _I.sweater },
+      { flt: 'ICV01', name: 'INFLATABLE COLLAR VEST', cat: 'NAPPA LEATHER · JET BLACK',  route: 'NL · JB',  gate: '04', price: '€1.247', stat: 'FINAL CALL', img: _I.collar },
+      { flt: 'HHV02', name: 'HORIZON 2.0 HOOD VEST',  cat: 'NAPPA LEATHER · NIGHT BLACK', route: 'NL · NB',  gate: '05', price: '€680',   stat: 'BOARDING',   img: _I.hood },
     ];
     const rows = fleet.map((f, i) => {
       const cls = f.stat === 'SOLD OUT' || f.stat === 'STANDBY' ? 'boarded' : '';
-      const silSvg = sils[f.sil] || sils.jacket;
       return `<a class="board-row" href="#" data-i="${i}">
-        <div class="row-sil">${silSvg}</div>
+        <div class="row-sil"><img src="${f.img}" alt="${f.name}" loading="lazy"></div>
         <div class="row-info">
           <div class="flt">${f.flt}</div>
           <div class="name">${f.name}<span>${f.cat}</span></div>
@@ -2038,24 +2048,23 @@
 
     /* ─── ARRIVALS VIEWER WIRING ─── */
     const bvFrame = document.getElementById('bv-frame');
-    const bvSvg = document.getElementById('bv-svg');
+    const bvImg  = document.getElementById('bv-img');
+    const bvSvg  = document.getElementById('bv-svg');
     const bvName = document.getElementById('bv-name');
-    const bvCat = document.getElementById('bv-cat');
+    const bvCat  = document.getElementById('bv-cat');
     const bvPrice = document.getElementById('bv-price');
     const bvStat = document.getElementById('bv-stat');
-    const bvFlt = document.getElementById('bv-flt');
+    const bvFlt  = document.getElementById('bv-flt');
     function setView(i) {
       const f = fleet[i]; if (!f) return;
       bvFrame.classList.add('swap');
       setTimeout(() => {
-        bvSvg.innerHTML = (sils[f.sil] || sils.jacket).replace(/^<svg[^>]*>|<\/svg>$/g, '');
-        const vb = (sils[f.sil] || sils.jacket).match(/viewBox="([^"]+)"/);
-        if (vb) bvSvg.setAttribute('viewBox', vb[1]);
-        bvName.textContent = f.name;
-        bvCat.textContent = f.cat;
-        bvPrice.textContent = f.price;
-        bvStat.textContent = f.stat;
-        bvFlt.textContent = f.flt;
+        if (bvImg) { bvImg.src = f.img; bvImg.alt = f.name; }
+        if (bvName) bvName.textContent = f.name;
+        if (bvCat)  bvCat.textContent  = f.cat;
+        if (bvPrice) bvPrice.textContent = f.price;
+        if (bvStat) bvStat.textContent = f.stat;
+        if (bvFlt)  bvFlt.textContent  = f.flt;
         bvFrame.classList.remove('swap');
       }, 180);
       document.querySelectorAll('.board-row').forEach(r => r.classList.toggle('active', +r.dataset.i === i));

@@ -1,5 +1,18 @@
 import _logoSrc from './assets/logo-new.png';
-/* ─────────── 7C SHARED JS ─────────── */
+import _imgAviator from './assets/aviatorjacket.jpeg';
+import _imgShell   from './assets/shellcoat.jpeg';
+import _imgSweater from './assets/sweather.jpeg';
+import _imgCollar  from './assets/inflatablecollar.jpeg';
+import _imgHood    from './assets/hood2dot0.jpeg';
+/* Expose for inline scripts */
+window._7C_IMGS = {
+  aviator:  _imgAviator,
+  shell:    _imgShell,
+  sweater:  _imgSweater,
+  collar:   _imgCollar,
+  hood:     _imgHood,
+};
+/* ───────── 7C SHARED JS ───────── */
 (function() {
   // Base path — root since we use a custom domain
   const _BASE = '';
@@ -246,14 +259,15 @@ import _logoSrc from './assets/logo-new.png';
         }));
       }
       // Version guard — clear old archive if it was seeded with placeholder data
-      if (localStorage.getItem('7c_archive_v') !== 'ss26') {
+      if (localStorage.getItem('7c_archive_v') !== 'ss26b') {
         localStorage.removeItem('7c_archive');
-        localStorage.setItem('7c_archive_v', 'ss26');
+        localStorage.setItem('7c_archive_v', 'ss26b');
       }
       if (!localStorage.getItem('7c_archive')) {
         localStorage.setItem('7c_archive', JSON.stringify([
           { no: 'AJ02', name: 'AVIATOR JACKET', cat: 'NAPPA LEATHER · SKY BLUE', season: 'SS26',
             edition: '0001 / 0777', size: 'M · EU 48', status: 'ACTIVE', silhouette: 'jacket',
+            img: window._7C_IMGS.aviator,
             material: 'NAPPA LEATHER', color: 'SKY BLUE', price: '€1.782',
             shell: 'NAPPA LEATHER (BOVINE)', tannery: 'VEGETABLE TANNAGE', lining: 'COTTON SATEEN', trims: 'YKK BRASS ZIP', weight: '1.10 KG', care: 'DRY CLEAN ONLY',
             journey: [
@@ -266,6 +280,7 @@ import _logoSrc from './assets/logo-new.png';
             ] },
           { no: 'CSO1', name: 'COAT SHELL', cat: 'GABARDINE · JET BLACK', season: 'SS26',
             edition: '0001 / 0777', size: 'M · EU 48', status: 'ACTIVE', silhouette: 'coat',
+            img: window._7C_IMGS.shell,
             material: 'GABARDINE', color: 'JET BLACK', price: '€1.485',
             shell: 'FULL GRAIN WHITE LEATHER', tannery: 'VEGETABLE TANNAGE', lining: 'GABARDINE WEAVE', trims: 'CONCEALED PRESS STUD', weight: '1.30 KG', care: 'DRY CLEAN ONLY',
             journey: [
